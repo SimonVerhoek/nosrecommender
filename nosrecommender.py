@@ -143,7 +143,7 @@ def export(links, articleListName, exportType):
                 print "export to " + outputFileName + ".csv complete!"
 
 # call function
-#export(newLinks, articleListName, exportType)
+export(newLinks, articleListName, exportType)
 
 def createIndex(indexName, filePath, connection):
     # if index of this name already exists,
