@@ -11,36 +11,38 @@ import cookielib, urllib2
 from cookielib import CookieJar
 import json
 
+# needed for scraper to open link
+cj = CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+
 # create a connection with ElasticSearch
 from pyes import *
 connection = ES('127.0.0.1:9200')
 connection = ES('localhost:9200')
 
-# ElasticSearch data
+# index name as seen in ElasticSearch
 indexName = "articleindex"
+
+# name of exported file
+outputFileName = "output"
+
+# if file is imported, give correct filepath here
 filePath = "/Users/simonverhoek/Desktop/output 2.json"
 
 # choose export format
 exportType = "json"
 #exportType = "csv"
 
-# needed for scraper to open link
-cj = CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-
-page = 'http://nos.nl/nieuws/archief'
-archief = opener.open(page).read()
-
-outputFileName = "output"
-
-# this is how the index will be named in ElasticSearch
+# prepare index object
 articleListName = "NOS Nieuws"
-
-links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
-
 articleList = []
 articles = {articleListName: articleList}
+
+# get all links from given webpage
+page = 'http://nos.nl/nieuws/archief'
+archief = opener.open(page).read()
+links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
 
 # prepare links
 newLinks = []
@@ -142,7 +144,6 @@ def export(links, articleListName, exportType):
             csv.write(body)
             if i == noLinks-1:
                 print "export to " + outputFileName + ".csv complete!"
-
 
 
 def createIndex(indexName, filePath, connection, articles):
