@@ -146,8 +146,17 @@ def export(links, articleListName, exportType):
 export(newLinks, articleListName, exportType)
 
 def createIndex(indexName, filePath, connection):
-    # if index of this name already exists,
-    # delete previous index
+    """ 
+    creates an index in ElasticSearch.
+    -   indexName should be a string.
+    -   filePath should be a string containing the
+        path to a certain (json) file.
+    -   connection should be a string containing 
+        the local ip address:port to the local
+        ElasticSearch server.
+    """
+
+    # if index of this name already exists, delete it
     try:
         connection.indices.delete_index(indexName)
     except:
