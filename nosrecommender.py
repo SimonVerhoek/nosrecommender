@@ -129,6 +129,8 @@ def export(links, articleListName, exportType):
                 outFile.close()
                 print "export to " + outputFileName + ".json complete!"
 
+                createIndex(indexName, filePath, connection, articles)
+
         elif exportType == "csv":
             csv.write("\n")
             csv.write(link)
@@ -142,10 +144,9 @@ def export(links, articleListName, exportType):
             if i == noLinks-1:
                 print "export to " + outputFileName + ".csv complete!"
 
-# call function
-export(newLinks, articleListName, exportType)
 
-def createIndex(indexName, filePath, connection):
+
+def createIndex(indexName, filePath, connection, articles):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
@@ -182,7 +183,8 @@ def createIndex(indexName, filePath, connection):
 
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
 
-    data = json.loads(open(filePath, "rb").read())
+    #data = json.loads(open(filePath, "rb").read())
+    data = articles
 
     for i in data["NOS Nieuws"]:
         connection.index({"title":i["title"],
@@ -190,4 +192,7 @@ def createIndex(indexName, filePath, connection):
                     "url":i["url"]}, 
                     indexName, "test-type")
 
-createIndex(indexName, filePath, connection)
+    print "index with name " + indexName + " created!"
+
+# call function
+export(newLinks, articleListName, exportType)
