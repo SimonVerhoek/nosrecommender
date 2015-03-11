@@ -21,8 +21,8 @@ indexName = "articleindex"
 filePath = "/Users/simonverhoek/Desktop/output 2.json"
 
 # choose export format
-#exportType = "json"
 exportType = "json"
+#exportType = "csv"
 
 # needed for scraper to open link
 cj = CookieJar()
