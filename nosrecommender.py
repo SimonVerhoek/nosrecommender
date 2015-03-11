@@ -39,6 +39,9 @@ articleListName = "NOS Nieuws"
 
 links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
 
+articleList = []
+articles = {articleListName: articleList}
+
 # prepare links
 newLinks = []
 for link in links:
@@ -60,9 +63,6 @@ def export(links, articleListName, exportType):
 
     # open appropriate file(type)
     if exportType == "json":
-        articleList = []
-        articles = {articleListName: articleList}
-
         outFile = open(outputFileName + ".json", "w")
     elif exportType == "csv":
         csv = open(outputFileName + ".csv", "a+")
@@ -127,9 +127,8 @@ def export(links, articleListName, exportType):
                 # write JSON object to file
                 json.dump(articles, outFile, indent = 4)
                 outFile.close()
-                print "export to " + outputFileName + ".json complete!"
-
-                createIndex(indexName, filePath, connection, articles)
+                print "export to " + outputFileName + ".json complete!"  
+                return articles
 
         elif exportType == "csv":
             csv.write("\n")
@@ -155,6 +154,8 @@ def createIndex(indexName, filePath, connection, articles):
     -   connection should be a string containing 
         the local ip address:port to the local
         ElasticSearch server.
+    -   articles should be a JSON object of the 
+        mapping described at ...
     """
 
     # if index of this name already exists, delete it
@@ -184,15 +185,15 @@ def createIndex(indexName, filePath, connection, articles):
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
 
     #data = json.loads(open(filePath, "rb").read())
-    data = articles
 
-    for i in data["NOS Nieuws"]:
-        connection.index({"title":i["title"],
-                    "body":i["body"], 
-                    "url":i["url"]}, 
-                    indexName, "test-type")
+    for i in articles["NOS Nieuws"]:
+        connection.index({  "title":i["title"],
+                            "body":i["body"], 
+                            "url":i["url"]}, 
+                            indexName, "test-type")
 
     print "index with name " + indexName + " created!"
 
-# call function
+# call functions
 export(newLinks, articleListName, exportType)
+createIndex(indexName, filePath, connection, articles)
