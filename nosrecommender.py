@@ -161,7 +161,7 @@ def exportCsv(articles, outputFileName):
     print "export to " + outputFileName + ".csv complete!"
 
 
-def createIndex(indexName, filePath, connection, articles):
+def createIndex(indexName, connection, articles):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
@@ -212,9 +212,9 @@ def createIndex(indexName, filePath, connection, articles):
 
 # call functions
 getData(newLinks, articleListName, exportType)
-#createIndex(indexName, filePath, connection, articles)
+createIndex(indexName, connection, articles)
 
 # export to either JSON or CSV file
-exportJson(articles, outputFileName)
+#exportJson(articles, outputFileName)
 #exportCsv(articles, outputFileName)
 
