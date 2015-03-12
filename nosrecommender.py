@@ -30,10 +30,6 @@ outputFileName = "output"
 # if file is imported, give correct filepath here
 filePath = "/Users/simonverhoek/Desktop/output 2.json"
 
-# choose export format
-exportType = "json"
-#exportType = "csv"
-
 # prepare index object
 articleListName = "NOS Nieuws"
 articleList = []
@@ -50,7 +46,7 @@ for link in links:
     link = "http://nos.nl" + link
     newLinks.append(link)
 
-def getData(links, articleListName, exportType):
+def getData(links, articleListName):
     """ 
     Scrapes the NOS "archief" page for articles.
     Returns an ElasticSearch-friendly JSON-object
@@ -173,7 +169,6 @@ def createIndex(indexName, connection, articles):
     -   articles should be a JSON object of the 
         mapping described at ...
     """
-
     # if index of this name already exists, delete it
     try:
         connection.indices.delete_index(indexName)
@@ -211,7 +206,7 @@ def createIndex(indexName, connection, articles):
     print "index with name " + indexName + " created!"
 
 # call functions
-getData(newLinks, articleListName, exportType)
+getData(newLinks, articleListName)
 createIndex(indexName, connection, articles)
 
 # export to either JSON or CSV file
