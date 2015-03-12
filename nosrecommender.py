@@ -63,7 +63,6 @@ def getData(links, articleListName, exportType):
         at the top of this document under "choose
         export format".
     """
-
     # get content
     for i, link in enumerate(links):
 
@@ -124,9 +123,6 @@ def getData(links, articleListName, exportType):
     return articles
 
 
-        
-            
-
 def exportJson(articles):
     """ 
     Exports the inserted object to a .json file.
@@ -139,6 +135,7 @@ def exportJson(articles):
     outFile.close()
 
     print "export to " + outputFileName + ".json complete!"
+
 
 def exportCsv(articles):
     """ 
@@ -162,6 +159,7 @@ def exportCsv(articles):
         csv.write(article["image"])
 
     print "export to " + outputFileName + ".csv complete!"
+
 
 def createIndex(indexName, filePath, connection, articles):
     """ 
@@ -215,4 +213,8 @@ def createIndex(indexName, filePath, connection, articles):
 # call functions
 getData(newLinks, articleListName, exportType)
 #createIndex(indexName, filePath, connection, articles)
+
+# export to either JSON or CSV file
+#exportJson(articles)
 exportCsv(articles)
+
