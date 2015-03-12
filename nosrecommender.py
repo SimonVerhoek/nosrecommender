@@ -52,7 +52,8 @@ for link in links:
 
 def getData(links, articleListName, exportType):
     """ 
-    Exports scraped data as either a .csv file or
+    Scrapes the NOS "archief" page for articles and 
+    exports scraped data as either a .csv file or
     an ElasticSearch-friendly JSON object. 
     -   articleListName should be a string.
     -   links should be an array of article urls
