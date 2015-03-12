@@ -92,31 +92,25 @@ def getData(links, articleListName):
 
         # filter out other article types as their content
         # is in other html elements, making it unfindable
-        if articleType == "article":
-
-            titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
-            title = titles[0]
-            categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)
-            # if article contains multiple categories, put them in
-            # a single string with commas inbetween so ES can read
-            # all of them
-            categories = ",".join(categories)
-            paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
-            images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
-            # check if article contains header image
-            if len(images) >= 1:
-                # assumes header is always the first <img> file in html doc
-                image = "http://www.nos.nl/data/image/" + str(images[0]) + "jpg"
-            else:
-                image = "none"
-
-
-        elif articleType == "liveblog-page":
-            print "liveblog page -- passed."
+        if articleType != "article":
+            print "Incompatible article type -- passed."
             continue
 
+        # scrape content
+        titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
+        title = titles[0]
+        categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)
+        # if article contains multiple categories, put them in a 
+        # single string with commas inbetween so ES can read all of them
+        categories = ",".join(categories)
+        paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
+        images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
+        # check if article contains header image
+        if len(images) >= 1:
+            # assumes header is always the first <img> file in html doc
+            image = "http://www.nos.nl/data/image/" + str(images[0]) + "jpg"
         else:
-            raise ValueError('found another unspecified article category!')
+            image = "none"
 
         # concatenate multiple paragraphs of body text
         # into one string
