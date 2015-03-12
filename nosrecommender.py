@@ -21,7 +21,7 @@ from pyes import *
 connection = ES('localhost:9200')
 
 # index name as seen in ElasticSearch
-indexName = "articleindex"
+indexName = "testindex"
 
 # name of exported file
 outputFileName = "output"
@@ -31,6 +31,11 @@ outputFileName = "output"
 #filePath = "/something/something/jsonfile.json"
 
 mapping = { u'url': {   'boost': 1.0,
+                        'index': 'analyzed',
+                        'store': 'yes',
+                        'type': u'string',
+                        "term_vector" : "with_positions_offsets"},
+            u'title': { 'boost': 1.0,
                         'index': 'analyzed',
                         'store': 'yes',
                         'type': u'string',
@@ -85,11 +90,17 @@ def getData(links, articleListName):
         articleType = re.findall(r'<article class="(.*?)">', linkSource)
         articleType = articleType[0]
 
-        # determine article type
+        # filter out other article types as their content
+        # is in other html elements, making it unfindable
         if articleType == "article":
+
             titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
             title = titles[0]
             categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)
+            # if article contains multiple categories, put them in
+            # a single string with commas inbetween so ES can read
+            # all of them
+            categories = ",".join(categories)
             paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
             images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
             # check if article contains header image
@@ -101,8 +112,6 @@ def getData(links, articleListName):
 
 
         elif articleType == "liveblog-page":
-            # filter out liveblog articles as their content
-            # is in other html elements, making them unfindable
             print "liveblog page -- passed."
             continue
 
@@ -203,6 +212,7 @@ def createIndex(indexName, connection, articles, mapping):
 
     for i in articles["NOS Nieuws"]:
         connection.index({  "title":i["title"],
+                            "categories":i["categories"],
                             "body":i["body"], 
                             "url":i["url"]}, 
                             indexName, "test-type")
