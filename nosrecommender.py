@@ -30,6 +30,7 @@ outputFileName = "output"
 # local file, give correct filepath here
 #filePath = "/something/something/jsonfile.json"
 
+# how the data should be formatted in ElasticSearch
 mapping = { u'url': {   'boost': 1.0,
                         'index': 'analyzed',
                         'store': 'yes',
