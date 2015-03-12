@@ -120,6 +120,7 @@ def getData(links, articleListName, exportType):
         # add article dict to list of articles
         articleList.append(article)
 
+    print "All articles processed!"
     return articles
 
 
@@ -127,6 +128,12 @@ def getData(links, articleListName, exportType):
             
 
 def exportJson(articles):
+    """ 
+    Exports the inserted object to a .json file.
+    -   articles should be an ElasticSearch-friendly
+        JSON object.
+    -   articleListName should be a string.
+    """
     outFile = open(outputFileName + ".json", "w")
     json.dump(articles, outFile, indent = 4)
     outFile.close()
@@ -134,9 +141,14 @@ def exportJson(articles):
     print "export to " + outputFileName + ".json complete!"
 
 def exportCsv(articles):
+    """ 
+    Exports the inserted object to a .csv file.
+    -   articles should be an object.
+    -   articleListName should be a string.
+    """
     csv = open(outputFileName + ".csv", "a+")
 
-    for article in articles["NOS Nieuws"]:
+    for article in articles[articleListName]:
         csv.write("\n")
         csv.write(article["url"])
         csv.write(",")        
