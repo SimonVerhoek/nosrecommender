@@ -114,15 +114,17 @@ def getData(links, articleListName, exportType):
         articleNo = str(i + 1)
         print "processing article " + articleNo + " of " + str(noLinks) + "..."
 
+        # create article dict
+        article = {}
+
+        article["url"] = link
+        article["title"] = title
+        article["categories"] = categories
+        article["body"] = body
+        article["image"] = image
+
         # write data to file
         if exportType == "json":
-            article = {}
-            article["url"] = link
-            article["title"] = title
-            article["categories"] = categories
-            article["body"] = body
-            article["image"] = image
-
             # add article dict to list of articles
             articleList.append(article)
 
@@ -135,14 +137,16 @@ def getData(links, articleListName, exportType):
 
         elif exportType == "csv":
             csv.write("\n")
-            csv.write(link)
+            csv.write(article["url"])
             csv.write(",")        
-            csv.write(title)
+            csv.write(article["title"])
             csv.write(",")
-            for category in categories:
+            for category in article["categories"]:
                 csv.write(category)
             csv.write(",")
-            csv.write(body)
+            csv.write(article["body"])
+            csv.write(",")
+            csv.write(article["image"])
             if i == noLinks-1:
                 print "export to " + outputFileName + ".csv complete!"
 
