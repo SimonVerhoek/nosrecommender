@@ -29,6 +29,22 @@ outputFileName = "output"
 # if file is imported, give correct filepath here
 #filePath = "/something/something/jsonfile.json"
 
+mapping = { u'url': {   'boost': 1.0,
+                        'index': 'analyzed',
+                        'store': 'yes',
+                        'type': u'string',
+                        "term_vector" : "with_positions_offsets"},
+            u'title': { 'boost': 1.0,
+                        'index': 'analyzed',
+                        'store': 'yes',
+                        'type': u'string',
+                        "term_vector" : "with_positions_offsets"},
+            u'body': {  'boost': 1.0,
+                        'index': 'analyzed',
+                        'store': 'yes',
+                        'type': u'string',
+                        "term_vector" : "with_positions_offsets"}}
+
 # prepare index object
 articleListName = "NOS Nieuws"
 articleList = []
@@ -156,7 +172,7 @@ def exportCsv(articles, outputFileName):
     print "export to " + outputFileName + ".csv complete!"
 
 
-def createIndex(indexName, connection, articles):
+def createIndex(indexName, connection, articles, mapping):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
@@ -176,21 +192,7 @@ def createIndex(indexName, connection, articles):
 
     connection.indices.create_index(indexName)
 
-    mapping = { u'url': {   'boost': 1.0,
-                            'index': 'analyzed',
-                            'store': 'yes',
-                            'type': u'string',
-                            "term_vector" : "with_positions_offsets"},
-                u'title': { 'boost': 1.0,
-                            'index': 'analyzed',
-                            'store': 'yes',
-                            'type': u'string',
-                            "term_vector" : "with_positions_offsets"},
-                u'body': {  'boost': 1.0,
-                            'index': 'analyzed',
-                            'store': 'yes',
-                            'type': u'string',
-                            "term_vector" : "with_positions_offsets"}}
+    
 
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
 
@@ -206,7 +208,7 @@ def createIndex(indexName, connection, articles):
 
 # call functions
 getData(newLinks, articleListName)
-createIndex(indexName, connection, articles)
+createIndex(indexName, connection, articles, mapping)
 
 # export to either JSON or CSV file
 #exportJson(articles, outputFileName)
