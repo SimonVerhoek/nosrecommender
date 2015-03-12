@@ -18,7 +18,6 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # create a connection with ElasticSearch
 from pyes import *
-connection = ES('127.0.0.1:9200')
 connection = ES('localhost:9200')
 
 # index name as seen in ElasticSearch
@@ -28,7 +27,7 @@ indexName = "articleindex"
 outputFileName = "output"
 
 # if file is imported, give correct filepath here
-filePath = "/Users/simonverhoek/Desktop/output 2.json"
+#filePath = "/something/something/jsonfile.json"
 
 # prepare index object
 articleListName = "NOS Nieuws"
