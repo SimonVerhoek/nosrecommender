@@ -26,7 +26,8 @@ indexName = "articleindex"
 # name of exported file
 outputFileName = "output"
 
-# if file is imported, give correct filepath here
+# if you want to create an index from a
+# local file, give correct filepath here
 #filePath = "/something/something/jsonfile.json"
 
 mapping = { u'url': {   'boost': 1.0,
@@ -190,13 +191,15 @@ def createIndex(indexName, connection, articles, mapping):
     except:
         pass
 
+    # if user declared a local file, create
+    # index of that file
+    if 'filePath' in globals():
+        print "Creating index of " + filePath + "..."
+        articles = json.loads(open(filePath, "rb").read())
+
+    # create index and its mapping
     connection.indices.create_index(indexName)
-
-    
-
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
-
-    #data = json.loads(open(filePath, "rb").read())
 
     for i in articles["NOS Nieuws"]:
         connection.index({  "title":i["title"],
@@ -204,7 +207,7 @@ def createIndex(indexName, connection, articles, mapping):
                             "url":i["url"]}, 
                             indexName, "test-type")
 
-    print "index with name " + indexName + " created!"
+    print "Index with name " + indexName + " created!"
 
 # call functions
 getData(newLinks, articleListName)
