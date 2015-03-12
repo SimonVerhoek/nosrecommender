@@ -50,7 +50,7 @@ for link in links:
     link = "http://nos.nl" + link
     newLinks.append(link)
 
-def export(links, articleListName, exportType):
+def getData(links, articleListName, exportType):
     """ 
     Exports scraped data as either a .csv file or
     an ElasticSearch-friendly JSON object. 
@@ -196,5 +196,5 @@ def createIndex(indexName, filePath, connection, articles):
     print "index with name " + indexName + " created!"
 
 # call functions
-export(newLinks, articleListName, exportType)
+getData(newLinks, articleListName, exportType)
 createIndex(indexName, filePath, connection, articles)
