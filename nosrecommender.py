@@ -52,9 +52,9 @@ for link in links:
 
 def getData(links, articleListName, exportType):
     """ 
-    Scrapes the NOS "archief" page for articles and 
-    exports scraped data as either a .csv file or
-    an ElasticSearch-friendly JSON object. 
+    Scrapes the NOS "archief" page for articles.
+    Returns an ElasticSearch-friendly JSON-object
+    containing all the data of all articles.
     -   articleListName should be a string.
     -   links should be an array of article urls
         in string form.
@@ -63,12 +63,6 @@ def getData(links, articleListName, exportType):
         at the top of this document under "choose
         export format".
     """
-
-    # open appropriate file(type)
-    if exportType == "json":
-        outFile = open(outputFileName + ".json", "w")
-    elif exportType == "csv":
-        csv = open(outputFileName + ".csv", "a+")
 
     # get content
     for i, link in enumerate(links):
@@ -123,33 +117,39 @@ def getData(links, articleListName, exportType):
         article["body"] = body
         article["image"] = image
 
-        # write data to file
-        if exportType == "json":
-            # add article dict to list of articles
-            articleList.append(article)
+        # add article dict to list of articles
+        articleList.append(article)
 
-            if i == noLinks-1:
-                # write JSON object to file
-                json.dump(articles, outFile, indent = 4)
-                outFile.close()
-                print "export to " + outputFileName + ".json complete!"  
-                return articles
+    return articles
 
-        elif exportType == "csv":
-            csv.write("\n")
-            csv.write(article["url"])
-            csv.write(",")        
-            csv.write(article["title"])
-            csv.write(",")
-            for category in article["categories"]:
-                csv.write(category)
-            csv.write(",")
-            csv.write(article["body"])
-            csv.write(",")
-            csv.write(article["image"])
-            if i == noLinks-1:
-                print "export to " + outputFileName + ".csv complete!"
 
+        
+            
+
+def exportJson(articles):
+    outFile = open(outputFileName + ".json", "w")
+    json.dump(articles, outFile, indent = 4)
+    outFile.close()
+
+    print "export to " + outputFileName + ".json complete!"
+
+def exportCsv(articles):
+    csv = open(outputFileName + ".csv", "a+")
+
+    for article in articles["NOS Nieuws"]:
+        csv.write("\n")
+        csv.write(article["url"])
+        csv.write(",")        
+        csv.write(article["title"])
+        csv.write(",")
+        for category in article["categories"]:
+            csv.write(category)
+        csv.write(",")
+        csv.write(article["body"])
+        csv.write(",")
+        csv.write(article["image"])
+
+    print "export to " + outputFileName + ".csv complete!"
 
 def createIndex(indexName, filePath, connection, articles):
     """ 
@@ -202,4 +202,5 @@ def createIndex(indexName, filePath, connection, articles):
 
 # call functions
 getData(newLinks, articleListName, exportType)
-createIndex(indexName, filePath, connection, articles)
+#createIndex(indexName, filePath, connection, articles)
+exportCsv(articles)
