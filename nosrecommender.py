@@ -123,7 +123,7 @@ def getData(links, articleListName, exportType):
     return articles
 
 
-def exportJson(articles):
+def exportJson(articles, outputFileName):
     """ 
     Exports the inserted object to a .json file.
     -   articles should be an ElasticSearch-friendly
@@ -137,7 +137,7 @@ def exportJson(articles):
     print "export to " + outputFileName + ".json complete!"
 
 
-def exportCsv(articles):
+def exportCsv(articles, outputFileName):
     """ 
     Exports the inserted object to a .csv file.
     -   articles should be an object.
@@ -215,6 +215,6 @@ getData(newLinks, articleListName, exportType)
 #createIndex(indexName, filePath, connection, articles)
 
 # export to either JSON or CSV file
-#exportJson(articles)
-exportCsv(articles)
+exportJson(articles, outputFileName)
+#exportCsv(articles, outputFileName)
 
