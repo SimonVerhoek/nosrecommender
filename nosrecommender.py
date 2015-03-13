@@ -31,26 +31,28 @@ outputFileName = "output"
 filePath = "/something/something/jsonfile.json"
 
 # how the data should be formatted in ElasticSearch
-mapping = { u'url': {   'boost': 1.0,
-                        'index': 'analyzed',
-                        'store': 'yes',
-                        'type': u'string',
-                        "term_vector" : "with_positions_offsets"},
-            u'title': { 'boost': 1.0,
-                        'index': 'analyzed',
-                        'store': 'yes',
-                        'type': u'string',
-                        "term_vector" : "with_positions_offsets"},
-            u'categories': { 'boost': 1.0,
-                        'index': 'analyzed',
-                        'store': 'yes',
-                        'type': u'string',
-                        "term_vector" : "with_positions_offsets"},
-            u'body': {  'boost': 1.0,
-                        'index': 'analyzed',
-                        'store': 'yes',
-                        'type': u'string',
-                        "term_vector" : "with_positions_offsets"}}
+mapping = { u'URL': {       'boost': 1.0,
+                            'index': 'analyzed',
+                            'store': 'yes',
+                            'type': u'string',
+                            "term_vector" : "with_positions_offsets"},
+            u'title': {     'boost': 2.0,
+                            'index': 'analyzed',
+                            'store': 'yes',
+                            'type': u'string',
+                            "similarity": "BM25",
+                            "term_vector" : "with_positions_offsets"},
+            u'categories': {'boost': 1.0,
+                            'index': 'analyzed',
+                            'store': 'yes',
+                            'type': u'string',
+                            "term_vector" : "with_positions_offsets"},
+            u'body': {      'boost': 1.0,
+                            'index': 'analyzed',
+                            'store': 'yes',
+                            'type': u'string',
+                            "similarity": "BM25",
+                            "term_vector" : "with_positions_offsets"}}
 
 setting = {
     "analysis": {
@@ -184,7 +186,7 @@ def exportJson(articles, outputFileName):
     json.dump(articles, outFile, indent = 4)
     outFile.close()
 
-    print "export to " + outputFileName + ".json complete!"
+    print "Exported articles to " + outputFileName + ".json."
 
 
 def exportCsv(articles, outputFileName):
@@ -208,7 +210,7 @@ def exportCsv(articles, outputFileName):
         csv.write(",")
         csv.write(article["image"])
 
-    print "export to " + outputFileName + ".csv complete!"
+    print "Exported articles to " + outputFileName + ".csv."
 
 
 def createIndex(indexName, connection, mapping, setting):
@@ -233,7 +235,7 @@ def createIndex(indexName, connection, mapping, setting):
     # create index and its mapping
     connection.indices.create_index(indexName, setting)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
-    print "Index with name " + indexName + " created."
+    print 'Index with name "' + indexName + '" created.'
 
 
 def addToIndex(indexName, connection, articles):    
@@ -257,7 +259,7 @@ def addToIndex(indexName, connection, articles):
                             "url":i["url"]}, 
                             indexName, "test-type")
 
-    print articleListName + " added to index."
+    print '"' + articleListName + '" articles added to index.'
 
 
 """
@@ -273,6 +275,6 @@ createIndex(indexName, connection, mapping, setting)
 addToIndex(indexName, connection, articles)
 
 # export data to either JSON or CSV file
-#exportJson(articles, outputFileName)
+exportJson(articles, outputFileName)
 #exportCsv(articles, outputFileName)
 
