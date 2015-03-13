@@ -4,7 +4,7 @@ __author__      = "Henk van Appeven, Simon Verhoek"
 __maintainer__  = "Simon Verhoek"
 __status__      = "Development"
 
-import time
+import datetime
 from urllib2 import urlopen
 import re
 import cookielib, urllib2
@@ -81,7 +81,14 @@ articleList = []
 articles = {articleListName: articleList}
 
 # get all links from given webpage
-page = 'http://nos.nl/nieuws/archief'
+date = datetime.date.today()
+year = str(date.year)
+month = str(date.month)
+day = str(date.day)
+
+
+page = "http://nos.nl/nieuws/archief/" + year + "-0" + month + "-" + day
+print page
 archief = opener.open(page).read()
 links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
 
