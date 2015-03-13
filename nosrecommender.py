@@ -52,6 +52,27 @@ mapping = { u'url': {   'boost': 1.0,
                         'type': u'string',
                         "term_vector" : "with_positions_offsets"}}
 
+setting = {
+    "analysis": {
+        "filter": {
+            "dutch_stop": {
+                "type": "stop",
+                "stopwords": "_dutch_" 
+            }
+        },
+        "analyzer": {
+            "dutch": {
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "dutch_stop"
+                ]
+            }
+        }
+    }
+}
+
+
 # prepare index object
 articleListName = "NOS Nieuws"
 articleList = []
@@ -190,7 +211,7 @@ def exportCsv(articles, outputFileName):
     print "export to " + outputFileName + ".csv complete!"
 
 
-def createIndex(indexName, connection, mapping):
+def createIndex(indexName, connection, mapping, setting):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
@@ -210,8 +231,9 @@ def createIndex(indexName, connection, mapping):
         pass
 
     # create index and its mapping
-    connection.indices.create_index(indexName)
+    connection.indices.create_index(indexName, setting)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
+    print "Index with name " + indexName + " created."
 
 
 def addToIndex(indexName, connection, articles):    
@@ -235,7 +257,7 @@ def addToIndex(indexName, connection, articles):
                             "url":i["url"]}, 
                             indexName, "test-type")
 
-    print "Index with name " + indexName + " created!"
+    print articleListName + " added to index."
 
 
 """
@@ -247,7 +269,7 @@ getData(newLinks, articleListName)
 #importJson(filePath)
 
 # create an index in ElasticSearch
-createIndex(indexName, connection, mapping)
+createIndex(indexName, connection, mapping, setting)
 addToIndex(indexName, connection, articles)
 
 # export data to either JSON or CSV file
