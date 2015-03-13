@@ -41,7 +41,7 @@ mapping = { u'url': {   'boost': 1.0,
                         'store': 'yes',
                         'type': u'string',
                         "term_vector" : "with_positions_offsets"},
-            u'title': { 'boost': 1.0,
+            u'categories': { 'boost': 1.0,
                         'index': 'analyzed',
                         'store': 'yes',
                         'type': u'string',
@@ -205,7 +205,7 @@ def createIndex(indexName, connection, articles, mapping):
     connection.indices.create_index(indexName)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
 
-    for i in articles["NOS Nieuws"]:
+    for i in articles[articleListName]:
         connection.index({  "title":i["title"],
                             "categories":i["categories"],
                             "body":i["body"], 
