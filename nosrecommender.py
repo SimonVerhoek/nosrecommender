@@ -28,7 +28,7 @@ outputFileName = "output"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-#filePath = "/something/something/jsonfile.json"
+filePath = "/something/something/jsonfile.json"
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'url': {   'boost': 1.0,
@@ -177,7 +177,7 @@ def exportCsv(articles, outputFileName):
     print "export to " + outputFileName + ".csv complete!"
 
 
-def createIndex(indexName, connection, articles, mapping):
+def createIndex(indexName, connection, mapping):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
@@ -195,15 +195,17 @@ def createIndex(indexName, connection, articles, mapping):
     except:
         pass
 
-    # if user declared a local file, create
-    # index of that file
-    if 'filePath' in globals():
-        print "Creating index of " + filePath + "..."
-        articles = json.loads(open(filePath, "rb").read())
-
     # create index and its mapping
     connection.indices.create_index(indexName)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
+
+def addToIndex(indexName, connection, articles, filePath = 0):
+
+    # if user declared a local file, create
+    # index of that file
+    if filePath != 0:
+        print "Creating index of " + filePath + "..."
+        articles = json.loads(open(filePath, "rb").read())
 
     for i in articles[articleListName]:
         connection.index({  "title":i["title"],
@@ -216,7 +218,8 @@ def createIndex(indexName, connection, articles, mapping):
 
 # call functions
 getData(newLinks, articleListName)
-createIndex(indexName, connection, articles, mapping)
+createIndex(indexName, connection, mapping)
+addToIndex(indexName, connection, articles, filePath)
 
 # export to either JSON or CSV file
 #exportJson(articles, outputFileName)
