@@ -83,11 +83,11 @@ articles = {articleListName: articleList}
 # get all links from given webpage
 date = datetime.date.today()
 year = str(date.year)
-month = str(date.month)
-day = str(date.day)
+month = "%02d" % date.month
+day = "%02d" % date.day
 
 
-page = "http://nos.nl/nieuws/archief/" + year + "-0" + month + "-" + day
+page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
 print page
 archief = opener.open(page).read()
 links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
