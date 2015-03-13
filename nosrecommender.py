@@ -4,7 +4,7 @@ __author__      = "Henk van Appeven, Simon Verhoek"
 __maintainer__  = "Simon Verhoek"
 __status__      = "Development"
 
-import datetime
+from datetime import datetime, date, timedelta
 from urllib2 import urlopen
 import re
 import cookielib, urllib2
@@ -28,7 +28,7 @@ outputFileName = "output"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-filePath = "/something/something/jsonfile.json"
+filePath = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'URL': {       'boost': 1.0,
@@ -80,23 +80,39 @@ articleListName = "NOS Nieuws"
 articleList = []
 articles = {articleListName: articleList}
 
-# get all links from given webpage
-date = datetime.date.today()
-year = str(date.year)
-month = "%02d" % date.month
-day = "%02d" % date.day
+# get days to scrape
+date = datetime.today()
 
-
-page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
-print page
-archief = opener.open(page).read()
-links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
+days = []
 
 # prepare links
 newLinks = []
-for link in links:
-    link = "http://nos.nl" + link
-    newLinks.append(link)
+
+noDays = 1
+
+for i in xrange(0, noDays):
+    
+    year = str(date.year)
+    month = "%02d" % date.month
+    day = "%02d" % date.day
+
+    page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
+
+    # get all links from this day's webpage
+    archief = opener.open(page).read()
+    links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
+
+    for link in links:
+        link = "http://nos.nl" + link
+        newLinks.append(link)
+
+    # go one day back in time
+    date = date - timedelta(days=1)
+
+
+
+
+
 
 def getData(links, articleListName):
     """ 
@@ -278,8 +294,8 @@ getData(newLinks, articleListName)
 #importJson(filePath)
 
 # create an index in ElasticSearch
-createIndex(indexName, connection, mapping, setting)
-addToIndex(indexName, connection, articles)
+#createIndex(indexName, connection, mapping, setting)
+#addToIndex(indexName, connection, articles)
 
 # export data to either JSON or CSV file
 exportJson(articles, outputFileName)
