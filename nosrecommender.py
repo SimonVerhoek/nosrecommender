@@ -90,31 +90,36 @@ urls = []
 
 noDays = 1
 
-for i in xrange(0, noDays):
+
+
+def getUrls(noDays, date):
+    for i in xrange(0, noDays):
     
-    year = str(date.year)
-    month = "%02d" % date.month
-    day = "%02d" % date.day
+        # properly format date
+        year = str(date.year)
+        month = "%02d" % date.month
+        day = "%02d" % date.day
 
-    page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
+        page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
 
-    # get all links from this day's webpage
-    archief = opener.open(page).read()
-    links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
+        # get all links from this day's webpage
+        archief = opener.open(page).read()
+        links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
 
-    for link in links:
-        link = "http://nos.nl" + link
-        urls.append(link)
+        for link in links:
+            link = "http://nos.nl" + link
+            urls.append(link)
 
-    # go one day back in time
-    date = date - timedelta(days=1)
+        # go one day back in time
+        date = date - timedelta(days=1)
+
+    print "urls scraped from past " + str(noDays) + " days."
+    return urls
 
 
 
 
-
-
-def getData(links, articleListName):
+def getData(urls, articleListName):
     """ 
     Scrapes the NOS "archief" page for articles.
     Returns an ElasticSearch-friendly JSON-object
@@ -128,9 +133,9 @@ def getData(links, articleListName):
         export format".
     """
     # get content
-    for i, link in enumerate(links):
+    for i, link in enumerate(urls):
 
-        noLinks = len(links)
+        noUrls = len(urls)
 
         linkSource = opener.open(link).read()
 
@@ -167,7 +172,7 @@ def getData(links, articleListName):
 
         # print progress in terminal
         articleNo = str(i + 1)
-        print "processing article " + articleNo + " of " + str(noLinks) + "..."
+        print "processing article " + articleNo + " of " + str(noUrls) + "..."
 
         # create article dict
         article = {}
@@ -290,6 +295,7 @@ Call functions here
 """
 # choose to either scrape the website or 
 # import from a local JSON file
+getUrls(noDays, date)
 getData(urls, articleListName)
 #importJson(filePath)
 
