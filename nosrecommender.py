@@ -139,6 +139,19 @@ def getData(links, articleListName):
     return articles
 
 
+def importJson(filePath):
+    """
+    Imports the JSON file from the given filepath
+    and returns this as an ElasticSearch-friendly
+    JSON object named "articles".
+    -   filePath should be a string containing the
+        path to a certain local .json file.
+    """
+    print "Importing articles from " + filePath + "..."
+    articles = json.loads(open(filePath, "rb").read())
+    return articles
+
+
 def exportJson(articles, outputFileName):
     """ 
     Exports the inserted object to a .json file.
@@ -186,8 +199,9 @@ def createIndex(indexName, connection, mapping):
     -   connection should be a string containing 
         the local ip address:port to the local
         ElasticSearch server.
-    -   articles should be a JSON object of the 
-        mapping described at ...
+    -   mapping should be a dictionary containing
+        the inner details of the ElasticSearch
+        index.
     """
     # if index of this name already exists, delete it
     try:
@@ -199,14 +213,21 @@ def createIndex(indexName, connection, mapping):
     connection.indices.create_index(indexName)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
 
-def addToIndex(indexName, connection, articles, filePath = 0):
 
-    # if user declared a local file, create
-    # index of that file
-    if filePath != 0:
-        print "Creating index of " + filePath + "..."
-        articles = json.loads(open(filePath, "rb").read())
-
+def addToIndex(indexName, connection, articles):    
+    """ 
+    Adds a given dictionary to a given index
+    in ElasticSearch.
+    -   indexName should be a string containing
+        the name of an existing index in 
+        ElasticSearch.
+    -   connection should be a string containing 
+        the local ip address:port to the local
+        ElasticSearch server.
+    -   articles should be an ElasticSearch-friendly
+        JSON object of the mapping described at 
+        the top of this document.
+    """
     for i in articles[articleListName]:
         connection.index({  "title":i["title"],
                             "categories":i["categories"],
@@ -216,12 +237,20 @@ def addToIndex(indexName, connection, articles, filePath = 0):
 
     print "Index with name " + indexName + " created!"
 
-# call functions
-getData(newLinks, articleListName)
-createIndex(indexName, connection, mapping)
-addToIndex(indexName, connection, articles, filePath)
 
-# export to either JSON or CSV file
+"""
+Call functions here
+"""
+# choose to either scrape the website or 
+# import from a local JSON file
+getData(newLinks, articleListName)
+#importJson(filePath)
+
+# create an index in ElasticSearch
+createIndex(indexName, connection, mapping)
+addToIndex(indexName, connection, articles)
+
+# export data to either JSON or CSV file
 #exportJson(articles, outputFileName)
 #exportCsv(articles, outputFileName)
 
