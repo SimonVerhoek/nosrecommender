@@ -4,6 +4,7 @@ __author__      = "Henk van Appeven, Simon Verhoek"
 __maintainer__  = "Simon Verhoek"
 __status__      = "Development"
 
+from pyes import *
 from datetime import datetime, date, timedelta
 from urllib2 import urlopen
 import re
@@ -17,18 +18,29 @@ opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # create a connection with ElasticSearch
-from pyes import *
 connection = ES('localhost:9200')
 
 # index name as seen in ElasticSearch
 indexName = "testindex"
 
-# name of exported file
-outputFileName = "output"
+# prepare index object
+articleListName = "NOS Nieuws"
+articleList = []
+articles = {articleListName: articleList}
+
+urls = []
+
+# set number of days back in time to
+# be scraped. If set to 1, only today's
+# archive is scraped.
+noDays = 1
 
 # if you want to create an index from a
 # local file, give correct filepath here
 filePath = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
+
+# name of exported file
+outputFileName = "output"
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'URL': {       'boost': 1.0,
@@ -74,25 +86,16 @@ setting = {
     }
 }
 
-
-# prepare index object
-articleListName = "NOS Nieuws"
-articleList = []
-articles = {articleListName: articleList}
-
-# get days to scrape
-date = datetime.today()
-
-days = []
-
-# prepare urls
-urls = []
-
-noDays = 1
-
-
-
 def getUrls(noDays, date):
+    """ 
+    Scrapes the NOS "archief" page for article urls
+    for a set amount of days. Returns a list named 
+    "urls" containing all found article urls.
+    -   noDays should be an integer, ranging from 1.
+    -   date should be datetime.today().
+    """
+    date = datetime.today()
+
     for i in xrange(0, noDays):
     
         # properly format date
@@ -113,10 +116,8 @@ def getUrls(noDays, date):
         # go one day back in time
         date = date - timedelta(days=1)
 
-    print "urls scraped from past " + str(noDays) + " days."
+    print str(len(urls)) + " urls scraped from past " + str(noDays) + " days."
     return urls
-
-
 
 
 def getData(urls, articleListName):
