@@ -85,8 +85,8 @@ date = datetime.today()
 
 days = []
 
-# prepare links
-newLinks = []
+# prepare urls
+urls = []
 
 noDays = 1
 
@@ -104,7 +104,7 @@ for i in xrange(0, noDays):
 
     for link in links:
         link = "http://nos.nl" + link
-        newLinks.append(link)
+        urls.append(link)
 
     # go one day back in time
     date = date - timedelta(days=1)
@@ -290,7 +290,7 @@ Call functions here
 """
 # choose to either scrape the website or 
 # import from a local JSON file
-getData(newLinks, articleListName)
+getData(urls, articleListName)
 #importJson(filePath)
 
 # create an index in ElasticSearch
