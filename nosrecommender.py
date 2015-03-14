@@ -11,6 +11,7 @@ import re
 import cookielib, urllib2
 from cookielib import CookieJar
 import json
+from bs4 import BeautifulSoup
 
 # needed for scraper to open link
 cj = CookieJar()
@@ -86,6 +87,9 @@ setting = {
     }
 }
 
+# location of index file to open
+indexFile = "index.html"
+
 def main():
     """
     Choose to either scrape the website or 
@@ -112,6 +116,8 @@ def main():
     """
     exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
+
+    addRecommendation(indexFile)
 
 
 def getUrls(noDays, date):
@@ -325,6 +331,51 @@ def addToIndex(indexName, connection, articles):
                             indexName, "test-type")
 
     print '"' + articleListName + '" articles added to index.'
+
+def addRecommendation(indexFile):
+    
+    # article metadata
+    url = "http://nos.nl/artikel/2023036-logopedisten-vragen-aandacht-voor-stoornis.html"
+    title = "Logopedisten vragen aandacht voor stoornis"
+    paragraph = "Kinderen met een taalontwikkelingsstoornis (TOS) gebruiken weinig woorden en hebben moeite met formuleren."
+    imageUrl = "http://www.nos.nl/data/image/2015/03/06/138236/4.jpg"
+
+    # article format
+    articleElementsList = [ 
+        "<li class='list-item space-bottom-xl'>",
+        '<a href="' + url + '" class="link-block">',
+        "<div class='list-left-content link-reset'>",
+        '<h3 class="list-left-title link-hover">' + title + '</h3>',
+        '<div class="meta">',
+        '<time datetime="2015-03-06T12:13:48+0100">12:13</time>',
+        "<span class='hide-small'>in Binnenland</span>",
+        "</div>",
+        "</div>",
+        '<figure class="list-image">',
+        '<img src="' + imageUrl + '" alt="" class=""/>',
+        '</figure>',
+        "</a>",
+        "</li>" ]
+
+    # open html file
+    htmlDoc = open(indexFile)
+    soup = BeautifulSoup(htmlDoc)
+
+    # find correct <ul> tag
+    indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
+
+    # append index file with all strings inside article[]
+    for elements in articleElementsList:
+        indexArticleList.append(elements)
+
+    # correctly format html tags
+    html = soup.prettify(formatter=None)
+
+    htmlDoc.close()
+
+    # overwrite index file
+    with open(indexFile, "wb") as file:
+        file.write(html)
 
 
 def exportJson(articles, outputFileName):
