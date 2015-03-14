@@ -36,6 +36,10 @@ urls = []
 # archive is scraped.
 noDays = 1
 
+# location of HTML file to open in which
+# recommended articles will be shown
+indexFile = "index.html"
+
 # if you want to create an index from a
 # local file, give correct filepath here
 filePath = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
@@ -87,9 +91,6 @@ setting = {
     }
 }
 
-# location of index file to open
-indexFile = "index.html"
-
 def main():
     """
     Choose to either scrape the website or 
@@ -107,17 +108,20 @@ def main():
     a new one is no longer necessary and can be
     skipped.
     """
-    createIndex(indexName, connection, mapping, setting)
-    addToIndex(indexName, connection, articles)
+    #createIndex(indexName, connection, mapping, setting)
+    #addToIndex(indexName, connection, articles)
 
     """
     If you want to export the articles,
     you can choose to do so here.
     """
-    exportJson(articles, outputFileName)
+    #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
 
-    addRecommendation(indexFile)
+    """
+    Add articles to recommendations HTML page
+    """
+    addRecommendations(articles, articleListName, indexFile)
 
 
 def getUrls(noDays, date):
@@ -332,50 +336,60 @@ def addToIndex(indexName, connection, articles):
 
     print '"' + articleListName + '" articles added to index.'
 
-def addRecommendation(indexFile):
-    
-    # article metadata
-    url = "http://nos.nl/artikel/2023036-logopedisten-vragen-aandacht-voor-stoornis.html"
-    title = "Logopedisten vragen aandacht voor stoornis"
-    paragraph = "Kinderen met een taalontwikkelingsstoornis (TOS) gebruiken weinig woorden en hebben moeite met formuleren."
-    imageUrl = "http://www.nos.nl/data/image/2015/03/06/138236/4.jpg"
 
-    # article format
-    articleElementsList = [ 
-        "<li class='list-item space-bottom-xl'>",
-        '<a href="' + url + '" class="link-block">',
-        "<div class='list-left-content link-reset'>",
-        '<h3 class="list-left-title link-hover">' + title + '</h3>',
-        '<div class="meta">',
-        '<time datetime="2015-03-06T12:13:48+0100">12:13</time>',
-        "<span class='hide-small'>in Binnenland</span>",
-        "</div>",
-        "</div>",
-        '<figure class="list-image">',
-        '<img src="' + imageUrl + '" alt="" class=""/>',
-        '</figure>',
-        "</a>",
-        "</li>" ]
+def addRecommendations(articles, articleListName, indexFile):
+    """
+    Adds articles to the recommendations HTML page.
+    -   articles should be an ElasticSearch-friendly
+        JSON object.
+    -   articleListName should be a string.
+    -   indexFile should be a string containing the 
+        path to the HTML file in which to paste the 
+        recommended articles.
+    """
+    for article in articles[articleListName]:
 
-    # open html file
-    htmlDoc = open(indexFile)
-    soup = BeautifulSoup(htmlDoc)
+        # article format
+        articleElementsList = [ 
+            "<li class='list-item space-bottom-xl'>",
+            '<a href="' + article["url"] + '" class="link-block">',
+            "<div class='list-left-content link-reset'>",
+            '<h3 class="list-left-title link-hover">' + article["title"] + '</h3>',
+            '<div class="meta">',
+            '<time datetime="2015-03-06T12:13:48+0100">12:13</time>',
+            "<span class='hide-small'>in Binnenland</span>",
+            "</div>",
+            "</div>",
+            '<figure class="list-image">',
+            '<img src="' + article["image"] + '" alt="" class=""/>',
+            '</figure>',
+            "</a>",
+            "</li>" ]
 
-    # find correct <ul> tag
-    indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
+        # open html file
+        htmlDoc = open(indexFile)
+        soup = BeautifulSoup(htmlDoc)
 
-    # append index file with all strings inside article[]
-    for elements in articleElementsList:
-        indexArticleList.append(elements)
+        # find correct <ul> tag
+        indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
 
-    # correctly format html tags
-    html = soup.prettify(formatter=None)
+        # append index file with all strings inside article[]
+        for elements in articleElementsList:
+            indexArticleList.append(elements)
 
-    htmlDoc.close()
+        # correctly format html tags
+        html = soup.prettify(formatter=None)
 
-    # overwrite index file
-    with open(indexFile, "wb") as file:
-        file.write(html)
+        htmlDoc.close()
+
+        # overwrite index file
+        with open(indexFile, "wb") as file:
+            # file is encoded to prevent "'ascii' codec can't 
+            # encode character [...] in position [...]: 
+            # ordinal not in range([...])" error
+            file.write(html.encode("utf-8"))
+
+    print str(len(articles[articleListName])) + " new articles recommended."
 
 
 def exportJson(articles, outputFileName):
