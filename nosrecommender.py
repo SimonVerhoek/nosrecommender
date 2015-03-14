@@ -86,6 +86,33 @@ setting = {
     }
 }
 
+def main():
+    """
+    Choose to either scrape the website or 
+    import from a local JSON file. So:
+    """
+    """ EITHER """
+    getUrls(noDays, date)
+    getData(urls, articleListName)
+    """ OR """
+    #importJson(filePath)
+
+    """
+    Creates an index in ElasticSearch. Once
+    an index of the given name exists, creating
+    a new one is no longer necessary and can be
+    skipped.
+    """
+    createIndex(indexName, connection, mapping, setting)
+    addToIndex(indexName, connection, articles)
+
+    """
+    If you want to export the articles,
+    you can choose to do so here.
+    """
+    exportJson(articles, outputFileName)
+    #exportCsv(articles, outputFileName)
+
 def getUrls(noDays, date):
     """ 
     Scrapes the NOS "archief" page for article urls
@@ -336,21 +363,6 @@ def addToIndex(indexName, connection, articles):
 
     print '"' + articleListName + '" articles added to index.'
 
-
-"""
-Call functions here
-"""
-# choose to either scrape the website or 
-# import from a local JSON file
-getUrls(noDays, date)
-getData(urls, articleListName)
-#importJson(filePath)
-
-# create an index in ElasticSearch
-createIndex(indexName, connection, mapping, setting)
-addToIndex(indexName, connection, articles)
-
-# export data to either JSON or CSV file
-exportJson(articles, outputFileName)
-#exportCsv(articles, outputFileName)
-
+# execute main
+if __name__ == "__main__":
+    main()
