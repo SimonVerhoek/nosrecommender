@@ -113,6 +113,7 @@ def main():
     exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
 
+
 def getUrls(noDays, date):
     """ 
     Scrapes the NOS "archief" page for article urls
@@ -277,44 +278,6 @@ def importJson(filePath):
     return articles
 
 
-def exportJson(articles, outputFileName):
-    """ 
-    Exports the inserted object to a .json file.
-    -   articles should be an ElasticSearch-friendly
-        JSON object.
-    -   articleListName should be a string.
-    """
-    outFile = open(outputFileName + ".json", "w")
-    json.dump(articles, outFile, indent = 4)
-    outFile.close()
-
-    print "Exported articles to " + outputFileName + ".json."
-
-
-def exportCsv(articles, outputFileName):
-    """ 
-    Exports the inserted object to a .csv file.
-    -   articles should be an object.
-    -   articleListName should be a string.
-    """
-    csv = open(outputFileName + ".csv", "a+")
-
-    for article in articles[articleListName]:
-        csv.write("\n")
-        csv.write(article["url"])
-        csv.write(",")        
-        csv.write(article["title"])
-        csv.write(",")
-        for category in article["categories"]:
-            csv.write(category)
-        csv.write(",")
-        csv.write(article["body"])
-        csv.write(",")
-        csv.write(article["image"])
-
-    print "Exported articles to " + outputFileName + ".csv."
-
-
 def createIndex(indexName, connection, mapping, setting):
     """ 
     creates an index in ElasticSearch.
@@ -362,6 +325,44 @@ def addToIndex(indexName, connection, articles):
                             indexName, "test-type")
 
     print '"' + articleListName + '" articles added to index.'
+
+
+def exportJson(articles, outputFileName):
+    """ 
+    Exports the inserted object to a .json file.
+    -   articles should be an ElasticSearch-friendly
+        JSON object.
+    -   articleListName should be a string.
+    """
+    outFile = open(outputFileName + ".json", "w")
+    json.dump(articles, outFile, indent = 4)
+    outFile.close()
+
+    print "Exported articles to " + outputFileName + ".json."
+
+
+def exportCsv(articles, outputFileName):
+    """ 
+    Exports the inserted object to a .csv file.
+    -   articles should be an object.
+    -   articleListName should be a string.
+    """
+    csv = open(outputFileName + ".csv", "a+")
+
+    for article in articles[articleListName]:
+        csv.write("\n")
+        csv.write(article["url"])
+        csv.write(",")        
+        csv.write(article["title"])
+        csv.write(",")
+        for category in article["categories"]:
+            csv.write(category)
+        csv.write(",")
+        csv.write(article["body"])
+        csv.write(",")
+        csv.write(article["image"])
+
+    print "Exported articles to " + outputFileName + ".csv."
 
 # execute main
 if __name__ == "__main__":
