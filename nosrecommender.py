@@ -165,8 +165,6 @@ def getData(urls, articleListName):
         body = cleanContent("body", paragraphs)
         image = cleanContent("image", images)
 
-        
-
         # create article dict
         article = {}
 
