@@ -133,10 +133,14 @@ def getData(urls, articleListName):
         at the top of this document under "choose
         export format".
     """
+    noUrls = len(urls)
+
     # get content
     for i, link in enumerate(urls):
 
-        noUrls = len(urls)
+        # print progress in terminal
+        articleNo = str(i + 1)
+        print "processing article " + articleNo + " of " + str(noUrls) + "..."
 
         linkSource = opener.open(link).read()
 
@@ -149,39 +153,19 @@ def getData(urls, articleListName):
             print "Incompatible article type -- passed."
             continue
 
-        # scrape content
+        # scrape raw content
         titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
-        title = titles[0]
-
-        title = title.replace("&#039;", " ")
-
-
-        categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)
-        # if article contains multiple categories, put them in a 
-        # single string with commas inbetween so ES can read all of them
-        categories = ",".join(categories)
+        categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)       
         paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
         images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
 
-        # check if article contains header image
-        if len(images) >= 1:
-            # assumes header is always the first <img> file in html doc
-            image = "http://www.nos.nl/data/image/" + str(images[0]) + "jpg"
-        else:
-            image = "none"
+        # clean content
+        title = cleanContent("title", titles)
+        categories = cleanContent("categories", categories)
+        body = cleanContent("body", paragraphs)
+        image = cleanContent("image", images)
 
-        # concatenate multiple paragraphs of body text
-        # into one string
-        body = ""
-        for paragraph in paragraphs:
-            body += paragraph
-
-        # strip any HTML tags from body
-        body = stripHtml(body)
-
-        # print progress in terminal
-        articleNo = str(i + 1)
-        print "processing article " + articleNo + " of " + str(noUrls) + "..."
+        
 
         # create article dict
         article = {}
@@ -197,6 +181,53 @@ def getData(urls, articleListName):
 
     print "All articles processed!"
     return articles
+
+def cleanContent(contentType, content):
+    """ 
+    Cleans the given content. How exactly the
+    it is cleaned, may differ per given content. 
+    Returns cleaned content.
+    -   contentType should be a string, 
+    -   links should be an array of article urls
+        in string form.
+    -   exportType should be a string containing 
+        either "json" or "csv". Can be selected 
+        at the top of this document under "choose
+        export format".
+    """
+    if contentType == "title":
+        title = content[0]
+        title = title.replace("&#039;", " ")
+        return title
+
+    elif contentType == "categories":
+        # if article contains multiple categories, put them in a 
+        # single string with commas inbetween so ES can read all of them
+        categories = ",".join(content)
+        return categories
+
+    elif contentType == "body":
+        # concatenate multiple paragraphs of body text
+        # into one string
+        body = ""
+        for paragraph in content:
+            body += paragraph
+        # strip any HTML tags from body
+        body = stripHtml(body)
+        return body
+
+    elif contentType == "image":
+        # check if article contains header image
+        if len(content) >= 1:
+            # assumes header is always the first <img> file in html doc
+            image = "http://www.nos.nl/data/image/" + str(content[0]) + "jpg"
+        else:
+            image = "none"
+        return image
+
+    else:
+        raise ValueError("Missing cleaning instructions for one or more types of content.")
+
 
 def stripHtml(text):
     """
