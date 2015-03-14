@@ -112,16 +112,16 @@ def main():
     #addToIndex(indexName, connection, articles)
 
     """
+    Add articles to recommendations HTML page
+    """
+    addRecommendations(articles, articleListName, indexFile)
+    
+    """
     If you want to export the articles,
     you can choose to do so here.
     """
     #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
-
-    """
-    Add articles to recommendations HTML page
-    """
-    addRecommendations(articles, articleListName, indexFile)
 
 
 def getUrls(noDays, date):
@@ -350,7 +350,7 @@ def addRecommendations(articles, articleListName, indexFile):
     for article in articles[articleListName]:
 
         # article format
-        articleElementsList = [ 
+        articleBlock = [ 
             "<li class='list-item space-bottom-xl'>",
             '<a href="' + article["url"] + '" class="link-block">',
             "<div class='list-left-content link-reset'>",
@@ -374,7 +374,7 @@ def addRecommendations(articles, articleListName, indexFile):
         indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
 
         # append index file with all strings inside article[]
-        for elements in articleElementsList:
+        for elements in articleBlock:
             indexArticleList.append(elements)
 
         # correctly format html tags
