@@ -152,12 +152,17 @@ def getData(urls, articleListName):
         # scrape content
         titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
         title = titles[0]
+
+        title = title.replace("&#039;", " ")
+
+
         categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)
         # if article contains multiple categories, put them in a 
         # single string with commas inbetween so ES can read all of them
         categories = ",".join(categories)
         paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
         images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
+
         # check if article contains header image
         if len(images) >= 1:
             # assumes header is always the first <img> file in html doc
@@ -170,6 +175,9 @@ def getData(urls, articleListName):
         body = ""
         for paragraph in paragraphs:
             body += paragraph
+
+        # strip any HTML tags from body
+        body = stripHtml(body)
 
         # print progress in terminal
         articleNo = str(i + 1)
@@ -190,6 +198,15 @@ def getData(urls, articleListName):
     print "All articles processed!"
     return articles
 
+def stripHtml(text):
+    """
+    Strips any HTML elements from a given string
+    text, and returns this as cleanText
+    -   text
+    """
+    cleanr = re.compile('<.*?>')
+    cleanText = re.sub(cleanr,'', text)
+    return cleanText
 
 def importJson(filePath):
     """
@@ -301,8 +318,8 @@ getData(urls, articleListName)
 #importJson(filePath)
 
 # create an index in ElasticSearch
-#createIndex(indexName, connection, mapping, setting)
-#addToIndex(indexName, connection, articles)
+createIndex(indexName, connection, mapping, setting)
+addToIndex(indexName, connection, articles)
 
 # export data to either JSON or CSV file
 exportJson(articles, outputFileName)
