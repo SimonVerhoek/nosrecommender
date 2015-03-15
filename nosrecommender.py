@@ -32,8 +32,6 @@ indexName = "testindex"
 
 # prepare index object
 articleListName = "NOS Nieuws"
-articleList = []
-articles = {articleListName: articleList}
 
 urls = []
 
@@ -98,9 +96,10 @@ setting = {
 }
 
 def main():
+    print
+    print "===== STEP 1: GETTING A NEWS ARCHIVE ====="
+    print
     """
-    STEP 1: GETTING A NEWS ARCHIVE
-
     Get a list of urls to NOS news articles
     to build an archive.
     """
@@ -108,7 +107,7 @@ def main():
     EITHER: scrape the NOS news archive 
     """
     #urls = scrapeUrls(noDays, date)
-    #newsArchive = getData(urls)
+    #newsArchive = getData(urls, articleListName)
 
     """ 
     OR: import a list of urls from a
@@ -116,9 +115,10 @@ def main():
     """
     newsArchive = importJson(localArchive)
 
+    print
+    print "===== STEP 2: INDEXING THE NEWS ARCHIVE ====="
+    print
     """
-    STEP 2: INDEXING THE NEWS ARCHIVE
-
     Create an index in ElasticSearch, and add
     the news archive to this.
     -   Once an index of the given name already exists, 
@@ -131,37 +131,48 @@ def main():
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
 
-    """
-    STEP 3: GETTING THE USER'S BROWSING HISTORY
-    
+    print
+    print "===== STEP 3: GETTING THE USER'S BROWSING HISTORY ====="
+    print
+    """   
     Grab a local .json file from your computer,
     containing the urls visited by the user.
     """
     browsingHistory = getBrowsingHistory(interval, historyFileName)
 
-    """
-    STEP 4: GETTING THE RECOMMENDED ARTICLES
-    
+    print
+    print "===== STEP 4: GETTING THE RECOMMENDED ARTICLES ====="
+    print
+    """    
     Let ElasticSearch compare the user's browsing
     history with its news archive, and recommend you
     the most relevant new articles.
     """
     recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
 
+    print
+    print "===== STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
+    print
     """
-    STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER
-
     Add articles to recommendations HTML page
     """
-    recommendedArticles = getData(recommendedUrls)
+    recommendedArticles = getData(recommendedUrls, articleListName)
     addRecommendations(recommendedArticles, articleListName, recommendationsPage)
     
+    print
+    print "===== STEP 6: EXPORTING DATA ====="
+    print
     """
     If you want to export the articles,
     you can choose to do so here.
     """
+    print "Nothing exported."
     #exportJson(newsArchive, outputFileName)
     #exportCsv(articles, outputFileName)
+
+    print
+    print "===== DONE! ====="
+    print
 
 
 def getBrowsingHistory(interval, historyFileName):
@@ -183,7 +194,7 @@ def getBrowsingHistory(interval, historyFileName):
         print "Waiting for file with browsing history..."
         getBrowsingHistory(interval, historyFileName)
     else:
-        return getData(importJson(historyFileName))
+        return getData(importJson(historyFileName), articleListName)
 
 
 def checkIfFileExists(fileName):
@@ -194,40 +205,10 @@ def checkIfFileExists(fileName):
         a list strings of urls.
     """    
     if os.path.isfile(fileName):
-        print
         print 'File named "' + fileName + '" found.'
         return True
     else:
         return False
-
-
-def getRecommendedArticles(visitedArticles, articleListName):
-    """
-    Gets recommended news articles. Compares 
-    visitedArticles to an ElasticSearch index.
-    Returns a dictionary with the results.
-    -   visitedArticles should be an ElasticSearch-friendly
-        dictionary containing the articles visited
-        by the user.
-    -   articleListName should be a string.
-    """   
-    recommendationUrls = []
-    query = []
-    
-    for i in visitedArticles[articleListName]:
-        query.append({"match": {"title": i["title"]}})
-        query.append({"match": {"body": i["body"]}})
-        query.append({"match": {"categories":i["categories"]}})
-
-    q = {"bool": {"should": query}} 
-    returns = connection.search(query = q, index = indexName)
-
-    for item in returns[:10]:
-        recommendationUrls.append(item["url"])
-
-    print
-    print "10 recommended articles found."
-    return recommendationUrls
 
 
 def scrapeUrls(noDays, date):
@@ -264,7 +245,7 @@ def scrapeUrls(noDays, date):
     return urls
 
 
-def getData(urls):
+def getData(urls, articleListName):
     """ 
     Scrapes the NOS "archief" page for the content
     of the articles of the given urls.
@@ -273,9 +254,10 @@ def getData(urls):
     -   urls should be a list containing strings
         with urls to NOS news articles.
     """
-    noUrls = len(urls)
+    articleList = []
+    articles = {articleListName: articleList}
 
-    print
+    noUrls = len(urls)
 
     # get content
     for i, link in enumerate(urls):
@@ -321,6 +303,7 @@ def getData(urls):
 
     print "All articles scraped!"
     return articles
+
 
 def cleanContent(contentType, content):
     """ 
@@ -387,7 +370,7 @@ def importJson(localFile):
         path to a certain local .json file.
     """
     content = json.loads(open(localFile, "rb").read())
-    print
+
     print "Imported content from " + localFile + "."
     return content
 
@@ -415,7 +398,7 @@ def initIndex(indexName, connection, mapping, setting):
     # create index and its mapping
     connection.indices.create_index(indexName, setting)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
-    print
+
     print 'Index with name "' + indexName + '" created.'
 
 
@@ -439,8 +422,36 @@ def addToIndex(indexName, connection, articles):
                             "body":i["body"], 
                             "url":i["url"]}, 
                             indexName, "test-type")
-    print
+
     print '"' + articleListName + '" articles added to index.'
+
+
+def getRecommendedArticles(visitedArticles, articleListName):
+    """
+    Gets recommended news articles. Compares 
+    visitedArticles to an ElasticSearch index.
+    Returns a dictionary with the results.
+    -   visitedArticles should be an ElasticSearch-friendly
+        dictionary containing the articles visited
+        by the user.
+    -   articleListName should be a string.
+    """   
+    recommendationUrls = []
+    query = []
+    
+    for i in visitedArticles[articleListName]:
+        query.append({"match": {"title": i["title"]}})
+        query.append({"match": {"body": i["body"]}})
+        query.append({"match": {"categories":i["categories"]}})
+
+    q = {"bool": {"should": query}} 
+    returns = connection.search(query = q, index = indexName)
+
+    for item in returns[:10]:
+        recommendationUrls.append(item["url"])
+
+    print "10 articles recommended. Let's scrape these..."
+    return recommendationUrls
 
 
 def addRecommendations(articles, articleListName, recommendationsPage):
@@ -453,6 +464,9 @@ def addRecommendations(articles, articleListName, recommendationsPage):
         path to the HTML file in which to paste the 
         recommended articles.
     """
+    print
+    print 'Writing recommended files to "' + recommendationsPage + '"...'
+
     for article in articles[articleListName]:
 
         # article format
@@ -495,8 +509,7 @@ def addRecommendations(articles, articleListName, recommendationsPage):
             # ordinal not in range([...])" error
             file.write(html.encode("utf-8"))
 
-    print
-    print str(len(articles[articleListName])) + ' new recommend articles added to "' + recommendationsPage + '".'
+    print str(len(articles[articleListName])) + " new articles recommended."
 
 
 def exportJson(articles, outputFileName):
@@ -509,7 +522,6 @@ def exportJson(articles, outputFileName):
     json.dump(articles, outFile, indent = 4)
     outFile.close()
 
-    print
     print "Exported articles to " + outputFileName + ".json."
 
 
@@ -534,7 +546,6 @@ def exportCsv(articles, outputFileName):
         csv.write(",")
         csv.write(article["image"])
 
-    print
     print "Exported articles to " + outputFileName + ".csv."
 
 # execute main
