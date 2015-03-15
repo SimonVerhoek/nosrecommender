@@ -137,32 +137,30 @@ def main():
     #exportCsv(articles, outputFileName)
 
 def getBrowsingHistory(interval, historyFileName):
-    time.sleep(interval)
-
-    if checkIfFileExists(historyFileName) == False:
-        print "No file found..."
-        getBrowsingHistory(interval, historyFileName)
-    else:
-        getData(importJson(historyFileName), articleListName)
-
-
-# wait for user input
-# as long as file is not found, keep checking
-# if file is found
-    # open file
-    # get data
-    # return articles
-
-
-def checkIfFileExists(historyFileName):
     """
     Starts a timer to check periodically for
     a JSON file with urls visited by the user.
     Restarts itself until a file is found.
-    If a file is found, the file is opened and
-    returned as a dictionary named "articles".
+    If a file is found, it gets the content of 
+    the given urls.
     -   interval should be an integer in 
         seconds.
+    -   historyFileName should be a string containing
+        the name of a JSON file with therein
+        a list strings of urls.
+    """    
+    time.sleep(interval)
+
+    if checkIfFileExists(historyFileName) == False:
+        print "Waiting for file with browsing history..."
+        getBrowsingHistory(interval, historyFileName)
+    else:
+        return getData(importJson(historyFileName), articleListName)
+
+
+def checkIfFileExists(historyFileName):
+    """
+    Checks if a certain file exists.
     -   historyFileName should be a string containing
         the name of a JSON file with therein
         a list strings of urls.
