@@ -103,9 +103,9 @@ def main():
     import from a local JSON file. So:
     """
     """ EITHER """
-    getUrls(noDays, date)
-    getData(urls, articleListName)
-    
+    #getUrls(noDays, date)
+    #getData(urls, articleListName)
+
     """ OR """
     #importJson(filePath)
 
@@ -127,7 +127,7 @@ def main():
     """
     Add articles to recommendations HTML page
     """
-    addRecommendations(articles, articleListName, indexFile)
+    #addRecommendations(articles, articleListName, indexFile)
     
     """
     If you want to export the articles,
@@ -141,6 +141,9 @@ def checkIfFileExists(interval, historyFileName):
     """
     Starts a timer to check periodically for
     a JSON file with urls visited by the user.
+    Restarts itself until a file is found.
+    If a file is found, the file is opened and
+    returned as a dictionary named "articles".
     -   interval should be an integer in 
         seconds.
     -   historyFileName should be a string containing
@@ -150,10 +153,12 @@ def checkIfFileExists(interval, historyFileName):
     time.sleep(interval)
     
     if os.path.isfile(historyFileName):
-        print "file exists"
+        print 'File with user history named "' + historyFileName + '" found and unpacked.'
+        userHistory = json.loads(open(historyFileName, "rb").read())
+        return userHistory
     else:
-        print "file does not exist"
-        checkIfFileExists()
+        print "Waiting for a file with a user's browsing history..."
+        checkIfFileExists(interval, historyFileName)
 
 
 def getUrls(noDays, date):
