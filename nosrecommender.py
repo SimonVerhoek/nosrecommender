@@ -210,17 +210,16 @@ def getRecommendedArticles(visitedArticles, articleListName):
         by the user.
     -   articleListName should be a string.
     """   
-    query = []
-
     recommendationUrls = []
-
+    query = []
+    
     for i in visitedArticles[articleListName]:
         query.append({"match": {"title": i["title"]}})
         query.append({"match": {"body": i["body"]}})
         query.append({"match": {"categories":i["categories"]}})
 
     q = {"bool": {"should": query}} 
-    returns = connection.search(query = q, index = "testindex")
+    returns = connection.search(query = q, index = indexName)
 
     print "recommended articles:"
 
@@ -493,7 +492,7 @@ def addRecommendations(articles, articleListName, recommendationsPage):
             # ordinal not in range([...])" error
             file.write(html.encode("utf-8"))
 
-    print str(len(articles[articleListName])) + " new articles recommended."
+    print str(len(articles[articleListName])) + ' new recommend articles added to "' + recommendationsPage + '".'
 
 
 def exportJson(articles, outputFileName):
