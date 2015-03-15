@@ -177,26 +177,6 @@ def main():
     print
 
 
-def checkIfRead(browsingHistory, recommendedUrls):
-    """
-    Checks if any of the recommended article have
-    already been read by the user.
-    -   browsingHistory should be an ElasticSearch-friendly
-        JSON-object.
-    -   recommendedUrls should be a list of strings
-        containing the urls of recommended articles.
-    """  
-    noRemovedArticles = 0
-
-    for visitedPage in browsingHistory[articleListName]:
-        for recommendedUrl in recommendedUrls:
-            if recommendedUrl == visitedPage["url"]:
-                recommendedUrls.remove(recommendedUrl)
-                noRemovedArticles += 1
-            else:
-                pass
-    print "removed " + str(noRemovedArticles) + " recommended articles which have already been read."
-
 def getBrowsingHistory(interval, historyFileName):
     """
     Starts a timer to check periodically for
@@ -394,7 +374,6 @@ def importJson(localFile):
     content = json.loads(open(localFile, "rb").read())
 
     print "Imported content from " + localFile + "."
-    print
     return content
 
 
@@ -475,6 +454,27 @@ def getRecommendedArticles(visitedArticles, articleListName):
 
     print "10 articles recommended."
     return recommendationUrls
+
+
+def checkIfRead(browsingHistory, recommendedUrls):
+    """
+    Checks if any of the recommended article have
+    already been read by the user.
+    -   browsingHistory should be an ElasticSearch-friendly
+        JSON-object.
+    -   recommendedUrls should be a list of strings
+        containing the urls of recommended articles.
+    """  
+    noRemovedArticles = 0
+
+    for visitedPage in browsingHistory[articleListName]:
+        for recommendedUrl in recommendedUrls:
+            if recommendedUrl == visitedPage["url"]:
+                recommendedUrls.remove(recommendedUrl)
+                noRemovedArticles += 1
+            else:
+                pass
+    print "removed " + str(noRemovedArticles) + " recommended articles which have already been read."
 
 
 def addRecommendations(articles, articleListName, recommendationsPage):
