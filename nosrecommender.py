@@ -150,6 +150,7 @@ def main():
     the most relevant new articles.
     """
     recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
+    checkIfRead(browsingHistory, recommendedUrls)
 
     print
     print "===== STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
@@ -175,6 +176,26 @@ def main():
     print "===== DONE! ====="
     print
 
+
+def checkIfRead(browsingHistory, recommendedUrls):
+    """
+    Checks if any of the recommended article have
+    already been read by the user.
+    -   browsingHistory should be an ElasticSearch-friendly
+        JSON-object.
+    -   recommendedUrls should be a list of strings
+        containing the urls of recommended articles.
+    """  
+    noRemovedArticles = 0
+
+    for visitedPage in browsingHistory[articleListName]:
+        for recommendedUrl in recommendedUrls:
+            if recommendedUrl == visitedPage["url"]:
+                recommendedUrls.remove(recommendedUrl)
+                noRemovedArticles += 1
+            else:
+                pass
+    print "removed " + str(noRemovedArticles) + " recommended articles which have already been read."
 
 def getBrowsingHistory(interval, historyFileName):
     """
@@ -452,7 +473,7 @@ def getRecommendedArticles(visitedArticles, articleListName):
     for item in returns[:noReccomendations]:
         recommendationUrls.append(item["url"])
 
-    print "10 articles recommended. Let's scrape these..."
+    print "10 articles recommended."
     return recommendationUrls
 
 
