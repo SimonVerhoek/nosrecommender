@@ -12,11 +12,17 @@ import cookielib, urllib2
 from cookielib import CookieJar
 import json
 from bs4 import BeautifulSoup
+import os.path
+import time
 
 # needed for scraper to open link
 cj = CookieJar()
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+ 
+# input arguments for checkIfFileExists().
+interval = 1                        # in seconds
+historyFileName = "urlsonly.json"   # name of file
 
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
@@ -112,6 +118,12 @@ def main():
     #addToIndex(indexName, connection, articles)
 
     """
+    Start a timer to check periodically for
+    a JSON file with urls visited by the user.
+    """
+    checkIfFileExists(interval, historyFileName)
+
+    """
     Add articles to recommendations HTML page
     """
     addRecommendations(articles, articleListName, indexFile)
@@ -122,6 +134,25 @@ def main():
     """
     #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
+
+
+def checkIfFileExists(interval, historyFileName):
+    """
+    Starts a timer to check periodically for
+    a JSON file with urls visited by the user.
+    -   interval should be an integer in 
+        seconds.
+    -   historyFileName should be a string containing
+        the name of a JSON file with therein
+        a list strings of urls.
+    """
+    time.sleep(interval)
+    
+    if os.path.isfile(historyFileName):
+        print "file exists"
+    else:
+        print "file does not exist"
+        checkIfFileExists()
 
 
 def getUrls(noDays, date):

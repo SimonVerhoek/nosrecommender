@@ -7,8 +7,6 @@ fileName = "urlsonly.json"
 
 interval = 1
 
-# define the function that is to be executed
-# it will be executed in a thread by the scheduler
 def checkIfFileExists():
 	time.sleep(interval)
 	
