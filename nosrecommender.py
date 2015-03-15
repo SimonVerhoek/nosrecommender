@@ -48,7 +48,7 @@ recommendationsPage = "index.html"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-localFile = "/something/something/file.json"
+localArchive = "/something/something/file.json"
 
 # name of exported file
 outputFileName = "output"
@@ -114,7 +114,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    #importJson(localFile)
+    #newsArchive = importJson(localArchive)
 
     """
     STEP 2: INDEXING THE NEWS ARCHIVE
