@@ -122,7 +122,7 @@ def main():
     Start a timer to check periodically for
     a JSON file with urls visited by the user.
     """
-    checkIfFileExists(interval, historyFileName)
+    getBrowsingHistory(interval, historyFileName)
 
     """
     Add articles to recommendations HTML page
@@ -136,8 +136,25 @@ def main():
     #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
 
+def getBrowsingHistory(interval, historyFileName):
+    time.sleep(interval)
 
-def checkIfFileExists(interval, historyFileName):
+    if checkIfFileExists(historyFileName) == False:
+        print "No file found..."
+        getBrowsingHistory(interval, historyFileName)
+    else:
+        getData(importJson(historyFileName), articleListName)
+
+
+# wait for user input
+# as long as file is not found, keep checking
+# if file is found
+    # open file
+    # get data
+    # return articles
+
+
+def checkIfFileExists(historyFileName):
     """
     Starts a timer to check periodically for
     a JSON file with urls visited by the user.
@@ -149,16 +166,12 @@ def checkIfFileExists(interval, historyFileName):
     -   historyFileName should be a string containing
         the name of a JSON file with therein
         a list strings of urls.
-    """
-    time.sleep(interval)
-    
+    """    
     if os.path.isfile(historyFileName):
-        print 'File with user history named "' + historyFileName + '" found and unpacked.'
-        userHistory = json.loads(open(historyFileName, "rb").read())
-        return userHistory
+        print 'File named "' + historyFileName + '" found.'
+        return True
     else:
-        print "Waiting for a file with a user's browsing history..."
-        checkIfFileExists(interval, historyFileName)
+        return False
 
 
 def getUrls(noDays, date):
@@ -197,16 +210,13 @@ def getUrls(noDays, date):
 
 def getData(urls, articleListName):
     """ 
-    Scrapes the NOS "archief" page for articles.
+    Scrapes the NOS "archief" page for the content
+    of the articles of the given urls.
     Returns an ElasticSearch-friendly JSON-object
     containing all the data of all articles.
+    -   urls should be a list containing strings
+        with urls to NOS news articles.
     -   articleListName should be a string.
-    -   links should be an array of article urls
-        in string form.
-    -   exportType should be a string containing 
-        either "json" or "csv". Can be selected 
-        at the top of this document under "choose
-        export format".
     """
     noUrls = len(urls)
 
@@ -320,9 +330,9 @@ def importJson(filePath):
     -   filePath should be a string containing the
         path to a certain local .json file.
     """
-    print "Importing articles from " + filePath + "..."
-    articles = json.loads(open(filePath, "rb").read())
-    return articles
+    print "Importing content from " + filePath + "..."
+    content = json.loads(open(filePath, "rb").read())
+    return content
 
 
 def createIndex(indexName, connection, mapping, setting):
