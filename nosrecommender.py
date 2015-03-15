@@ -37,12 +37,10 @@ articles = {articleListName: articleList}
 
 urls = []
 
-newsArchive = {}
-
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
-noDays = 1
+noDays = 3
 
 # location of HTML file to open in which
 # recommended articles will be shown
@@ -105,8 +103,13 @@ def main():
     import from a local JSON file. So:
     """
     """ EITHER """
-    getNewsArchive()
-    #getUrls(noDays, date)
+    urls = scrapeUrls(noDays, date)
+
+    for url in urls:
+        print url
+
+    newsArchive = getData(urls, articleListName)
+    #scrapeUrls(noDays, date)
     #getData(urls, articleListName)
 
     """ OR """
@@ -114,19 +117,20 @@ def main():
 
     """
     Creates an index in ElasticSearch. Once
-    an index of the given name exists, creating
+    an index of the givezn name exists, creating
     a new one is no longer necessary and can be
     skipped.
     """
     initIndex(indexName, connection, mapping, setting)
-    addToIndex(indexName, connection, articles)
+    addToIndex(indexName, connection, newsArchive)
 
     """
     Start a timer to check periodically for
     a JSON file with urls visited by the user.
     """
-    
-    getRecommendedArticles(getBrowsingHistory(interval, historyFileName), getNewsArchive, articleListName)
+    browsingHistory = getBrowsingHistory(interval, historyFileName)
+
+    getRecommendedArticles(browsingHistory, newsArchive, articleListName)
 
     """
     Add articles to recommendations HTML page
@@ -140,8 +144,6 @@ def main():
     #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
 
-def getNewsArchive():
-    return getData(getUrls(noDays, date), articleListName)
 
 def getBrowsingHistory(interval, historyFileName):
     """
@@ -178,6 +180,7 @@ def checkIfFileExists(historyFileName):
     else:
         return False
 
+
 def getRecommendedArticles(visitedArticles, newsArchive, articleListName):
     
     query = []
@@ -190,11 +193,11 @@ def getRecommendedArticles(visitedArticles, newsArchive, articleListName):
     results = connection.search(query = q, index = "nos_rss_dutch3")
 
     print "recommended articles:"
-    for result in results[:30]:
+    for result in results[:10]:
         print result["url"]
 
 
-def getUrls(noDays, date):
+def scrapeUrls(noDays, date):
     """ 
     Scrapes the NOS "archief" page for article urls
     for a set amount of days. Returns a list named 
