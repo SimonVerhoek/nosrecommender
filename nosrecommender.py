@@ -99,37 +99,58 @@ setting = {
 
 def main():
     """
-    Choose to either scrape the website or 
-    import from a local JSON file. So:
+    STEP 1: GETTING A NEWS ARCHIVE
+
+    Get a list of urls to NOS news articles
+    to build an archive.
     """
-    """ EITHER """
+    """ 
+    EITHER: scrape the NOS news archive 
+    """
     urls = scrapeUrls(noDays, date)
-
     newsArchive = getData(urls)
-    #scrapeUrls(noDays, date)
-    #getData(urls, articleListName)
 
-    """ OR """
+    """ 
+    OR: import a list of urls from a
+    local .json file.
+    """
     #importJson(filePath)
 
     """
-    Creates an index in ElasticSearch. Once
-    an index of the givezn name exists, creating
-    a new one is no longer necessary and can be
-    skipped.
+    STEP 2: INDEXING THE NEWS ARCHIVE
+
+    Create an index in ElasticSearch, and add
+    the news archive to this.
+    -   Once an index of the given name already exists, 
+        initialising a new one will replace the current
+        one. 
+    -   When no new index is initialised, the results of
+        addToIndex will be appended to the existing index.
+        WARNING: this may result into duplicate entries!
     """
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
 
     """
-    Start a timer to check periodically for
-    a JSON file with urls visited by the user.
+    STEP 3: GETTING THE USER'S BROWSING HISTORY
+    
+    Grab a local .json file from your computer,
+    containing the urls visited by the user.
     """
     browsingHistory = getBrowsingHistory(interval, historyFileName)
 
-    getRecommendedArticles(browsingHistory, newsArchive, articleListName)
+    """
+    STEP 4: GETTING THE RECOMMENDED ARTICLES
+    
+    Let ElasticSearch compare the user's browsing
+    history with its news archive, and recommend you
+    the most relevant new articles.
+    """
+    recommendedArticles = getRecommendedArticles(browsingHistory, newsArchive, articleListName)
 
     """
+    STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER
+
     Add articles to recommendations HTML page
     """
     #addRecommendations(articles, articleListName, indexFile)
