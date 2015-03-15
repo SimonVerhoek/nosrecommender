@@ -194,6 +194,7 @@ def checkIfFileExists(fileName):
         a list strings of urls.
     """    
     if os.path.isfile(fileName):
+        print
         print 'File named "' + fileName + '" found.'
         return True
     else:
@@ -221,14 +222,12 @@ def getRecommendedArticles(visitedArticles, articleListName):
     q = {"bool": {"should": query}} 
     returns = connection.search(query = q, index = indexName)
 
-    print "recommended articles:"
-
     for item in returns[:10]:
-        print item["url"]
         recommendationUrls.append(item["url"])
 
+    print
+    print "10 recommended articles found."
     return recommendationUrls
-        
 
 
 def scrapeUrls(noDays, date):
@@ -275,6 +274,8 @@ def getData(urls):
         with urls to NOS news articles.
     """
     noUrls = len(urls)
+
+    print
 
     # get content
     for i, link in enumerate(urls):
@@ -385,8 +386,9 @@ def importJson(localFile):
     -   localFile should be a string containing the
         path to a certain local .json file.
     """
-    print "Importing content from " + localFile + "..."
     content = json.loads(open(localFile, "rb").read())
+    print
+    print "Imported content from " + localFile + "."
     return content
 
 
@@ -413,6 +415,7 @@ def initIndex(indexName, connection, mapping, setting):
     # create index and its mapping
     connection.indices.create_index(indexName, setting)
     connection.indices.put_mapping("test_type", {'properties':mapping}, [indexName])
+    print
     print 'Index with name "' + indexName + '" created.'
 
 
@@ -436,7 +439,7 @@ def addToIndex(indexName, connection, articles):
                             "body":i["body"], 
                             "url":i["url"]}, 
                             indexName, "test-type")
-
+    print
     print '"' + articleListName + '" articles added to index.'
 
 
@@ -492,6 +495,7 @@ def addRecommendations(articles, articleListName, recommendationsPage):
             # ordinal not in range([...])" error
             file.write(html.encode("utf-8"))
 
+    print
     print str(len(articles[articleListName])) + ' new recommend articles added to "' + recommendationsPage + '".'
 
 
@@ -505,6 +509,7 @@ def exportJson(articles, outputFileName):
     json.dump(articles, outFile, indent = 4)
     outFile.close()
 
+    print
     print "Exported articles to " + outputFileName + ".json."
 
 
@@ -529,6 +534,7 @@ def exportCsv(articles, outputFileName):
         csv.write(",")
         csv.write(article["image"])
 
+    print
     print "Exported articles to " + outputFileName + ".csv."
 
 # execute main
