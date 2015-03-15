@@ -374,6 +374,7 @@ def importJson(localFile):
     content = json.loads(open(localFile, "rb").read())
 
     print "Imported content from " + localFile + "."
+    print
     return content
 
 
