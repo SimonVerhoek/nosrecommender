@@ -33,8 +33,6 @@ indexName = "testindex"
 # prepare index object
 articleListName = "NOS Nieuws"
 
-urls = []
-
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
@@ -43,6 +41,9 @@ noDays = 4
 # location of HTML file to open in which
 # recommended articles will be shown
 recommendationsPage = "index.html"
+
+# how many recommendations should be given
+noReccomendations = 10
 
 # if you want to create an index from a
 # local file, give correct filepath here
@@ -447,7 +448,7 @@ def getRecommendedArticles(visitedArticles, articleListName):
     q = {"bool": {"should": query}} 
     returns = connection.search(query = q, index = indexName)
 
-    for item in returns[:10]:
+    for item in returns[:noReccomendations]:
         recommendationUrls.append(item["url"])
 
     print "10 articles recommended. Let's scrape these..."
