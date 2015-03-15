@@ -40,7 +40,7 @@ urls = []
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
-noDays = 2
+noDays = 4
 
 # location of HTML file to open in which
 # recommended articles will be shown
@@ -48,7 +48,7 @@ recommendationsPage = "index.html"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-localArchive = "/something/something/file.json"
+localArchive = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
 
 # name of exported file
 outputFileName = "output"
@@ -107,14 +107,14 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    urls = scrapeUrls(noDays, date)
-    newsArchive = getData(urls)
+    #urls = scrapeUrls(noDays, date)
+    #newsArchive = getData(urls)
 
     """ 
     OR: import a list of urls from a
     local .json file.
     """
-    #newsArchive = importJson(localArchive)
+    newsArchive = importJson(localArchive)
 
     """
     STEP 2: INDEXING THE NEWS ARCHIVE
@@ -146,20 +146,21 @@ def main():
     history with its news archive, and recommend you
     the most relevant new articles.
     """
-    recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
+    recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
 
     """
     STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER
 
     Add articles to recommendations HTML page
     """
-    #addRecommendations(articles, articleListName, recommendationsPage)
+    recommendedArticles = getData(recommendedUrls)
+    addRecommendations(recommendedArticles, articleListName, recommendationsPage)
     
     """
     If you want to export the articles,
     you can choose to do so here.
     """
-    #exportJson(articles, outputFileName)
+    #exportJson(newsArchive, outputFileName)
     #exportCsv(articles, outputFileName)
 
 
@@ -210,17 +211,25 @@ def getRecommendedArticles(visitedArticles, articleListName):
     -   articleListName should be a string.
     """   
     query = []
+
+    recommendationUrls = []
+
     for i in visitedArticles[articleListName]:
-        query.append({"match" :{"title": i["title"]}})
+        query.append({"match": {"title": i["title"]}})
         query.append({"match": {"body": i["body"]}})
         query.append({"match": {"categories":i["categories"]}})
 
     q = {"bool": {"should": query}} 
-    results = connection.search(query = q, index = "nos_rss_dutch3")
+    returns = connection.search(query = q, index = "testindex")
 
     print "recommended articles:"
-    for result in results[:10]:
-        print result["url"]
+
+    for item in returns[:10]:
+        print item["url"]
+        recommendationUrls.append(item["url"])
+
+    return recommendationUrls
+        
 
 
 def scrapeUrls(noDays, date):
