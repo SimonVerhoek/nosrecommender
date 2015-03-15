@@ -40,15 +40,15 @@ urls = []
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
-noDays = 3
+noDays = 2
 
 # location of HTML file to open in which
 # recommended articles will be shown
-indexFile = "index.html"
+recommendationsPage = "index.html"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-localFile = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
+localFile = "/something/something/file.json"
 
 # name of exported file
 outputFileName = "output"
@@ -146,14 +146,14 @@ def main():
     history with its news archive, and recommend you
     the most relevant new articles.
     """
-    recommendedArticles = getRecommendedArticles(browsingHistory, newsArchive, articleListName)
+    recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
 
     """
     STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER
 
     Add articles to recommendations HTML page
     """
-    #addRecommendations(articles, articleListName, indexFile)
+    #addRecommendations(articles, articleListName, recommendationsPage)
     
     """
     If you want to export the articles,
@@ -185,21 +185,21 @@ def getBrowsingHistory(interval, historyFileName):
         return getData(importJson(historyFileName))
 
 
-def checkIfFileExists(historyFileName):
+def checkIfFileExists(fileName):
     """
     Checks if a certain file exists.
-    -   historyFileName should be a string containing
+    -   fileName should be a string containing
         the name of a JSON file with therein
         a list strings of urls.
     """    
-    if os.path.isfile(historyFileName):
-        print 'File named "' + historyFileName + '" found.'
+    if os.path.isfile(fileName):
+        print 'File named "' + fileName + '" found.'
         return True
     else:
         return False
 
 
-def getRecommendedArticles(visitedArticles, newsArchive, articleListName):
+def getRecommendedArticles(visitedArticles, articleListName):
     """
     Gets recommended news articles. Compares 
     visitedArticles to an ElasticSearch index.
@@ -432,13 +432,13 @@ def addToIndex(indexName, connection, articles):
     print '"' + articleListName + '" articles added to index.'
 
 
-def addRecommendations(articles, articleListName, indexFile):
+def addRecommendations(articles, articleListName, recommendationsPage):
     """
     Adds articles to the recommendations HTML page.
     -   articles should be an ElasticSearch-friendly
         JSON object.
     -   articleListName should be a string.
-    -   indexFile should be a string containing the 
+    -   recommendationsPage should be a string containing the 
         path to the HTML file in which to paste the 
         recommended articles.
     """
@@ -462,7 +462,7 @@ def addRecommendations(articles, articleListName, indexFile):
             "</li>" ]
 
         # open html file
-        htmlDoc = open(indexFile)
+        htmlDoc = open(recommendationsPage)
         soup = BeautifulSoup(htmlDoc)
 
         # find correct <ul> tag
@@ -478,7 +478,7 @@ def addRecommendations(articles, articleListName, indexFile):
         htmlDoc.close()
 
         # overwrite index file
-        with open(indexFile, "wb") as file:
+        with open(recommendationsPage, "wb") as file:
             # file is encoded to prevent "'ascii' codec can't 
             # encode character [...] in position [...]: 
             # ordinal not in range([...])" error
