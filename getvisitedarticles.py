@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 
 import os.path
+import time
 
 fileName = "urlsonly.json"
 
-def checkIfFileExists(fileName):
-	if os.path.isfile(fileName):
-		return "file exists"
-	else:
-		return "file does not exist"
+interval = 1
 
-print checkIfFileExists(fileName)
+# define the function that is to be executed
+# it will be executed in a thread by the scheduler
+def checkIfFileExists():
+	time.sleep(interval)
+	
+	if os.path.isfile(fileName):
+		print "file exists"
+	else:
+		print "file does not exist"
+		checkIfFileExists()
+
+
+checkIfFileExists()
