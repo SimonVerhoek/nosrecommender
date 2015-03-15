@@ -105,6 +105,7 @@ def main():
     """ EITHER """
     getUrls(noDays, date)
     getData(urls, articleListName)
+    
     """ OR """
     #importJson(filePath)
 
