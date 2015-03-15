@@ -37,6 +37,8 @@ articles = {articleListName: articleList}
 
 urls = []
 
+newsArchive = {}
+
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
@@ -103,6 +105,7 @@ def main():
     import from a local JSON file. So:
     """
     """ EITHER """
+    getNewsArchive()
     #getUrls(noDays, date)
     #getData(urls, articleListName)
 
@@ -115,14 +118,15 @@ def main():
     a new one is no longer necessary and can be
     skipped.
     """
-    #createIndex(indexName, connection, mapping, setting)
-    #addToIndex(indexName, connection, articles)
+    initIndex(indexName, connection, mapping, setting)
+    addToIndex(indexName, connection, articles)
 
     """
     Start a timer to check periodically for
     a JSON file with urls visited by the user.
     """
-    getBrowsingHistory(interval, historyFileName)
+    
+    getRecommendedArticles(getBrowsingHistory(interval, historyFileName), getNewsArchive, articleListName)
 
     """
     Add articles to recommendations HTML page
@@ -135,6 +139,9 @@ def main():
     """
     #exportJson(articles, outputFileName)
     #exportCsv(articles, outputFileName)
+
+def getNewsArchive():
+    return getData(getUrls(noDays, date), articleListName)
 
 def getBrowsingHistory(interval, historyFileName):
     """
@@ -170,6 +177,21 @@ def checkIfFileExists(historyFileName):
         return True
     else:
         return False
+
+def getRecommendedArticles(visitedArticles, newsArchive, articleListName):
+    
+    query = []
+    for i in visitedArticles[articleListName]:
+        query.append({"match" :{"title": i["title"]}})
+        query.append({"match": {"body": i["body"]}})
+        query.append({"match": {"categories":i["categories"]}})
+
+    q = {"bool": {"should": query}} 
+    results = connection.search(query = q, index = "nos_rss_dutch3")
+
+    print "recommended articles:"
+    for result in results[:30]:
+        print result["url"]
 
 
 def getUrls(noDays, date):
@@ -223,7 +245,7 @@ def getData(urls, articleListName):
 
         # print progress in terminal
         articleNo = str(i + 1)
-        print "processing article " + articleNo + " of " + str(noUrls) + "..."
+        print "Scraping article " + articleNo + " of " + str(noUrls) + "..."
 
         linkSource = opener.open(link).read()
 
@@ -260,7 +282,7 @@ def getData(urls, articleListName):
         # add article dict to list of articles
         articleList.append(article)
 
-    print "All articles processed!"
+    print "All articles scraped!"
     return articles
 
 def cleanContent(contentType, content):
@@ -333,7 +355,7 @@ def importJson(filePath):
     return content
 
 
-def createIndex(indexName, connection, mapping, setting):
+def initIndex(indexName, connection, mapping, setting):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
