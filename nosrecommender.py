@@ -105,10 +105,7 @@ def main():
     """ EITHER """
     urls = scrapeUrls(noDays, date)
 
-    for url in urls:
-        print url
-
-    newsArchive = getData(urls, articleListName)
+    newsArchive = getData(urls)
     #scrapeUrls(noDays, date)
     #getData(urls, articleListName)
 
@@ -164,7 +161,7 @@ def getBrowsingHistory(interval, historyFileName):
         print "Waiting for file with browsing history..."
         getBrowsingHistory(interval, historyFileName)
     else:
-        return getData(importJson(historyFileName), articleListName)
+        return getData(importJson(historyFileName))
 
 
 def checkIfFileExists(historyFileName):
@@ -231,7 +228,7 @@ def scrapeUrls(noDays, date):
     return urls
 
 
-def getData(urls, articleListName):
+def getData(urls):
     """ 
     Scrapes the NOS "archief" page for the content
     of the articles of the given urls.
@@ -239,7 +236,6 @@ def getData(urls, articleListName):
     containing all the data of all articles.
     -   urls should be a list containing strings
         with urls to NOS news articles.
-    -   articleListName should be a string.
     """
     noUrls = len(urls)
 
