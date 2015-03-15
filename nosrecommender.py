@@ -48,7 +48,7 @@ indexFile = "index.html"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-filePath = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
+localFile = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
 
 # name of exported file
 outputFileName = "output"
@@ -114,7 +114,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    #importJson(filePath)
+    #importJson(localFile)
 
     """
     STEP 2: INDEXING THE NEWS ARCHIVE
@@ -200,7 +200,15 @@ def checkIfFileExists(historyFileName):
 
 
 def getRecommendedArticles(visitedArticles, newsArchive, articleListName):
-    
+    """
+    Gets recommended news articles. Compares 
+    visitedArticles to an ElasticSearch index.
+    Returns a dictionary with the results.
+    -   visitedArticles should be an ElasticSearch-friendly
+        dictionary containing the articles visited
+        by the user.
+    -   articleListName should be a string.
+    """   
     query = []
     for i in visitedArticles[articleListName]:
         query.append({"match" :{"title": i["title"]}})
@@ -310,9 +318,7 @@ def cleanContent(contentType, content):
     Cleans the given content. How exactly the
     it is cleaned, may differ per given content. 
     Returns cleaned content.
-    -   contentType should be a string, 
-    -   links should be an array of article urls
-        in string form.
+    -   contentType should be a string.
     -   exportType should be a string containing 
         either "json" or "csv". Can be selected 
         at the top of this document under "choose
@@ -362,16 +368,17 @@ def stripHtml(text):
     cleanText = re.sub(cleanr,'', text)
     return cleanText
 
-def importJson(filePath):
+
+def importJson(localFile):
     """
-    Imports the JSON file from the given filepath
+    Imports the JSON file from the given localFile
     and returns this as an ElasticSearch-friendly
     JSON object named "articles".
-    -   filePath should be a string containing the
+    -   localFile should be a string containing the
         path to a certain local .json file.
     """
-    print "Importing content from " + filePath + "..."
-    content = json.loads(open(filePath, "rb").read())
+    print "Importing content from " + localFile + "..."
+    content = json.loads(open(localFile, "rb").read())
     return content
 
 
@@ -379,14 +386,15 @@ def initIndex(indexName, connection, mapping, setting):
     """ 
     creates an index in ElasticSearch.
     -   indexName should be a string.
-    -   filePath should be a string containing the
-        path to a certain (json) file.
     -   connection should be a string containing 
         the local ip address:port to the local
         ElasticSearch server.
     -   mapping should be a dictionary containing
         the inner details of the ElasticSearch
         index.
+    -   setting should be a dictionary containing
+        the settings for the ElasticSearch index
+        to be initialised.
     """
     # if index of this name already exists, delete it
     try:
@@ -482,9 +490,8 @@ def addRecommendations(articles, articleListName, indexFile):
 def exportJson(articles, outputFileName):
     """ 
     Exports the inserted object to a .json file.
-    -   articles should be an ElasticSearch-friendly
-        JSON object.
-    -   articleListName should be a string.
+    -   articles should be a dictionary.
+    -   outputFileName should be a string.
     """
     outFile = open(outputFileName + ".json", "w")
     json.dump(articles, outFile, indent = 4)
@@ -496,8 +503,8 @@ def exportJson(articles, outputFileName):
 def exportCsv(articles, outputFileName):
     """ 
     Exports the inserted object to a .csv file.
-    -   articles should be an object.
-    -   articleListName should be a string.
+    -   articles should be a dictionary.
+    -   outputFileName should be a string.
     """
     csv = open(outputFileName + ".csv", "a+")
 
