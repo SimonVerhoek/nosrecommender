@@ -24,6 +24,8 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 # history is checked
 interval = 5  
 
+urls = []
+
 # input arguments for checkIfFileExists().
 historyFileName = "urlsonly.json"   # name of file
 
@@ -71,13 +73,19 @@ mapping = { u'URL': {       'boost': 1.0,
                             'index': 'analyzed',
                             'store': 'yes',
                             'type': u'string',
+                            "similarity": "BM25",
                             "term_vector" : "with_positions_offsets"},
             u'body': {      'boost': 1.0,
                             'index': 'analyzed',
                             'store': 'yes',
                             'type': u'string',
                             "similarity": "BM25",
-                            "term_vector" : "with_positions_offsets"}}
+                            "term_vector" : "with_positions_offsets"},
+            u'image': {     'boost': 0.0,
+                            'index': 'analyzed',
+                            'store': 'yes',
+                            'type': u'string',
+                            "term_vector" : "with_positions_offsets"},                }
 
 setting = {
     "analysis": {
@@ -110,14 +118,14 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    #urls = scrapeUrls(noDays, date)
-    #newsArchive = getData(urls, articleListName)
+    urls = scrapeUrls(noDays, date)
+    newsArchive = getData(urls, articleListName)
 
     """ 
     OR: import a list of urls from a
     local .json file.
     """
-    newsArchive = importJson(localArchive)
+    #newsArchive = importJson(localArchive)
 
     print
     print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
@@ -135,7 +143,7 @@ def main():
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
 
-    processBrowsingHistory()
+    #processBrowsingHistory()
 
 def processBrowsingHistory():
     """
@@ -214,6 +222,14 @@ def getBrowsingHistory(historyFileName):
     """                
     visitedUrls = importJson(historyFileName)
     os.remove(historyFileName)
+
+    if type(visitedUrls) == list:
+        print "is list"
+    elif type(visitedUrls) == dict:
+        visitedUrls = visitedUrls.values()
+        print "is dict"
+        print visitedUrls
+
     return getData(visitedUrls, articleListName)
 
 
@@ -441,7 +457,8 @@ def addToIndex(indexName, connection, articles):
         connection.index({  "title":i["title"],
                             "categories":i["categories"],
                             "body":i["body"], 
-                            "url":i["url"]}, 
+                            "url":i["url"], 
+                            "image":i["image"]},
                             indexName, "test-type")
 
     print '"' + articleListName + '" articles added to index.'
