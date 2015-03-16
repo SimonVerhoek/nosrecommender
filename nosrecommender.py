@@ -384,9 +384,8 @@ def stripHtml(text):
 
 def importJson(localFile):
     """
-    Imports the JSON file from the given localFile
-    and returns this as an ElasticSearch-friendly
-    JSON object.
+    Imports a JSON file from the given localFile
+    and returns this.
     -   localFile should be a string containing the
         path to a certain local .json file.
     """
