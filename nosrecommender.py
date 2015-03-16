@@ -374,8 +374,8 @@ def cleanContent(contentType, content):
 def stripHtml(text):
     """
     Strips any HTML elements from a given string
-    text, and returns this as cleanText
-    -   text
+    text.
+    -   text should be a string.
     """
     cleanr = re.compile('<.*?>')
     cleanText = re.sub(cleanr,'', text)
@@ -386,7 +386,7 @@ def importJson(localFile):
     """
     Imports the JSON file from the given localFile
     and returns this as an ElasticSearch-friendly
-    JSON object named "articles".
+    JSON object.
     -   localFile should be a string containing the
         path to a certain local .json file.
     """
