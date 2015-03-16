@@ -98,7 +98,7 @@ setting = {
 
 def main():
     print
-    print "===== STEP 1: GETTING A NEWS ARCHIVE ====="
+    print "===== PRESTEP 1: GETTING A NEWS ARCHIVE ====="
     print
     """
     Get a list of urls to NOS news articles
@@ -117,7 +117,7 @@ def main():
     newsArchive = importJson(localArchive)
 
     print
-    print "===== STEP 2: INDEXING THE NEWS ARCHIVE ====="
+    print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
     print
     """
     Create an index in ElasticSearch, and add
@@ -132,49 +132,60 @@ def main():
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
 
-    print
-    print "===== STEP 3: GETTING THE USER'S BROWSING HISTORY ====="
-    print
-    """   
-    Grab a local .json file from your computer,
-    containing the urls visited by the user.
-    """
-    browsingHistory = getBrowsingHistory(interval, historyFileName)
+    processBrowsingHistory()
 
-    print
-    print "===== STEP 4: GETTING THE RECOMMENDED ARTICLES ====="
-    print
-    """    
-    Let ElasticSearch compare the user's browsing
-    history with its news archive, and recommend you
-    the most relevant new articles.
-    """
-    recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
-    checkIfRead(browsingHistory, recommendedUrls)
+def processBrowsingHistory():
+    time.sleep(5)
 
-    print
-    print "===== STEP 5: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
-    print
-    """
-    Add articles to recommendations HTML page
-    """
-    recommendedArticles = getData(recommendedUrls, articleListName)
-    addRecommendations(recommendedArticles, articleListName, recommendationsPage)
-    
-    print
-    print "===== STEP 6: EXPORTING DATA ====="
-    print
-    """
-    If you want to export the articles,
-    you can choose to do so here.
-    """
-    print "Nothing exported."
-    #exportJson(newsArchive, outputFileName)
-    #exportCsv(articles, outputFileName)
+    if checkIfFileExists(historyFileName) == True:
+        print
+        print "===== STEP 1: GETTING THE USER'S BROWSING HISTORY ====="
+        print
+        """   
+        Grab a local .json file from your computer,
+        containing the urls visited by the user.
+        """
+        browsingHistory = getBrowsingHistory(interval, historyFileName)
 
-    print
-    print "===== DONE! ====="
-    print
+        print
+        print "===== STEP 2: GETTING THE RECOMMENDED ARTICLES ====="
+        print
+        """    
+        Let ElasticSearch compare the user's browsing
+        history with its news archive, and recommend you
+        the most relevant new articles.
+        """
+        recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
+        checkIfRead(browsingHistory, recommendedUrls)
+
+        print
+        print "===== STEP 3: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
+        print
+        """
+        Add articles to recommendations HTML page
+        """
+        recommendedArticles = getData(recommendedUrls, articleListName)
+        addRecommendations(recommendedArticles, articleListName, recommendationsPage)
+
+        print
+        print "===== STEP 4: EXPORTING DATA ====="
+        print
+        """
+        If you want to export the articles,
+        you can choose to do so here.
+        """
+        print "Nothing exported."
+        #exportJson(newsArchive, outputFileName)
+        #exportCsv(articles, outputFileName)
+
+        print
+        print "===== BROWSING HISTORY PROCESSED - CYCLE DONE ====="
+        print
+    else:
+        print
+        print "Waiting for file with browsing history..."
+
+    processBrowsingHistory()
 
 
 def getBrowsingHistory(interval, historyFileName):
@@ -189,14 +200,10 @@ def getBrowsingHistory(interval, historyFileName):
     -   historyFileName should be a string containing
         the name of a JSON file with therein
         a list strings of urls.
-    """    
-    time.sleep(interval)
-
-    if checkIfFileExists(historyFileName) == False:
-        print "Waiting for file with browsing history..."
-        getBrowsingHistory(interval, historyFileName)
-    else:
-        return getData(importJson(historyFileName), articleListName)
+    """                
+    visitedUrls = importJson(historyFileName)
+    os.remove(historyFileName)
+    return getData(visitedUrls, articleListName)
 
 
 def checkIfFileExists(fileName):
@@ -207,6 +214,7 @@ def checkIfFileExists(fileName):
         a list strings of urls.
     """    
     if os.path.isfile(fileName):
+        print
         print 'File named "' + fileName + '" found.'
         return True
     else:
