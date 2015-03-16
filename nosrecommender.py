@@ -26,7 +26,7 @@ interval = 5
 
 urls = []
 
-visitedarticlesList = []
+visitedUrlsList = []
 
 # input arguments for checkIfFileExists().
 historyFileName = "urlsonly.json"   # name of file
@@ -172,7 +172,8 @@ def processBrowsingHistory():
         Grab a local .json file from your computer,
         containing the urls visited by the user.
         """
-        browsingHistory = getBrowsingHistory(historyFileName)
+        getBrowsingHistory(historyFileName)
+        browsingHistory = getData(visitedUrlsList, articleListName)
 
         print
         print "===== STEP 2: GETTING THE RECOMMENDED ARTICLES ====="
@@ -184,6 +185,7 @@ def processBrowsingHistory():
         """
         recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
         checkIfRead(browsingHistory, recommendedArticles)
+        
 
         print
         print "===== STEP 3: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
@@ -234,7 +236,10 @@ def getBrowsingHistory(historyFileName):
         print "is dict"
         print visitedUrls
 
-    return getData(visitedUrls, articleListName)
+    visitedUrlsList.extend(visitedUrls)
+    print "visitedurlslist = " + str(visitedUrlsList)
+
+    #return getData(visitedUrls, articleListName)
 
 
 def checkIfFileExists(fileName):
