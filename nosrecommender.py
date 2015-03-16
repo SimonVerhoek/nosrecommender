@@ -511,6 +511,14 @@ def addRecommendations(articles, articleListName, recommendationsPage):
     print
     print 'Writing recommended files to "' + recommendationsPage + '"...'
 
+    # open html file
+    htmlDoc = open(recommendationsPage)
+    soup = BeautifulSoup(htmlDoc)
+    
+    # remove any articles there
+    for li in soup.find_all("li"):
+        li.replaceWith("")
+
     for article in articles[articleListName]:
 
         # article format
@@ -530,9 +538,7 @@ def addRecommendations(articles, articleListName, recommendationsPage):
             "</a>",
             "</li>" ]
 
-        # open html file
-        htmlDoc = open(recommendationsPage)
-        soup = BeautifulSoup(htmlDoc)
+        
 
         # find correct <ul> tag
         indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
