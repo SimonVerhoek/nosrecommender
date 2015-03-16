@@ -234,7 +234,6 @@ def getBrowsingHistory(historyFileName):
     elif type(visitedUrls) == dict:
         visitedUrls = visitedUrls.values()
         print "is dict"
-        print visitedUrls
 
     visitedUrlsList.extend(visitedUrls)
     print "visitedurlslist = " + str(visitedUrlsList)
