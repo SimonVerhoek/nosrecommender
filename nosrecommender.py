@@ -20,8 +20,11 @@ cj = CookieJar()
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
  
+# seconds of interval between which new browsing
+# history is checked
+interval = 5  
+
 # input arguments for checkIfFileExists().
-interval = 1                        # in seconds
 historyFileName = "urlsonly.json"   # name of file
 
 # create a connection with ElasticSearch
@@ -135,7 +138,7 @@ def main():
     processBrowsingHistory()
 
 def processBrowsingHistory():
-    time.sleep(5)
+    time.sleep(interval)
 
     if checkIfFileExists(historyFileName) == True:
         print
@@ -182,7 +185,6 @@ def processBrowsingHistory():
         print "===== BROWSING HISTORY PROCESSED - CYCLE DONE ====="
         print
     else:
-        print
         print "Waiting for file with browsing history..."
 
     processBrowsingHistory()
@@ -435,6 +437,7 @@ def addToIndex(indexName, connection, articles):
                             indexName, "test-type")
 
     print '"' + articleListName + '" articles added to index.'
+    print
 
 
 def getRecommendedArticles(visitedArticles, articleListName):
