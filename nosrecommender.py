@@ -26,6 +26,8 @@ interval = 5
 
 urls = []
 
+visitedarticlesList = []
+
 # input arguments for checkIfFileExists().
 historyFileName = "urlsonly.json"   # name of file
 
@@ -118,8 +120,8 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    urls = scrapeUrls(noDays, date)
-    newsArchive = getData(urls, articleListName)
+    #urls = scrapeUrls(noDays, date)
+    #newsArchive = getData(urls, articleListName)
 
     """ 
     OR: import a list of urls from a
@@ -142,10 +144,10 @@ def main():
         addToIndex will be appended to the existing index.
         WARNING: this may result into duplicate entries!
     """
-    initIndex(indexName, connection, mapping, setting)
-    addToIndex(indexName, connection, newsArchive)
+    #initIndex(indexName, connection, mapping, setting)
+    #addToIndex(indexName, connection, newsArchive)
 
-    #processBrowsingHistory()
+    processBrowsingHistory()
 
 def processBrowsingHistory():
     """
@@ -180,8 +182,8 @@ def processBrowsingHistory():
         history with its news archive, and recommend you
         the most relevant new articles.
         """
-        recommendedUrls = getRecommendedArticles(browsingHistory, articleListName)
-        checkIfRead(browsingHistory, recommendedUrls)
+        recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
+        checkIfRead(browsingHistory, recommendedArticles)
 
         print
         print "===== STEP 3: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
@@ -189,7 +191,7 @@ def processBrowsingHistory():
         """
         Add articles to recommendations HTML page
         """
-        recommendedArticles = getData(recommendedUrls, articleListName)
+        #recommendedArticles = getData(recommendedUrls, articleListName)
         addRecommendations(recommendedArticles, articleListName, recommendationsPage)
 
         print
@@ -320,7 +322,7 @@ def getData(urls, articleListName):
         titles = re.findall(r'class="article__title">(.*?)</h1>', linkSource)
         categories = re.findall(r'class="link-grey">(.*?)</a>', linkSource)       
         paragraphs = re.findall(r'<p>(.*?)</p>', linkSource)
-        images = re.findall(r'http://www.nos.nl/data/image/(.*?)jpg', linkSource)
+        images = re.findall(r'http://nos.nl/data/image/(.*?)jpg', linkSource)
 
         # clean content
         title = cleanContent("title", titles)
@@ -380,7 +382,7 @@ def cleanContent(contentType, content):
         # check if article contains header image
         if len(content) >= 1:
             # assumes header is always the first <img> file in html doc
-            image = "http://www.nos.nl/data/image/" + str(content[0]) + "jpg"
+            image = "http://nos.nl/data/image/" + str(content[0]) + "jpg"
         else:
             image = "none"
         return image
@@ -477,39 +479,43 @@ def getRecommendedArticles(visitedArticles, articleListName):
         by the user.
     -   articleListName should be a string.
     """   
-    recommendationUrls = []
+    articleList = []
+    articles = {articleListName: articleList}
+    
     query = []
     
     for i in visitedArticles[articleListName]:
         query.append({"match": {"title": i["title"]}})
         query.append({"match": {"body": i["body"]}})
         query.append({"match": {"categories":i["categories"]}})
+        query.append({"match": {"image":i["image"]}})
 
     q = {"bool": {"should": query}} 
     returns = connection.search(query = q, index = indexName)
 
+
     for item in returns[:noReccomendations]:
-        recommendationUrls.append(item["url"])
+        articleList.append(item)
 
     print "10 articles recommended."
-    return recommendationUrls
+    return articles
 
 
-def checkIfRead(browsingHistory, recommendedUrls):
+def checkIfRead(browsingHistory, recommendedArticles):
     """
     Checks if any of the recommended article have
     already been read by the user.
     -   browsingHistory should be an ElasticSearch-friendly
         JSON-object.
-    -   recommendedUrls should be a list of strings
+    -   recommendedArticles should be a list of strings
         containing the urls of recommended articles.
     """  
     noRemovedArticles = 0
 
     for visitedPage in browsingHistory[articleListName]:
-        for recommendedUrl in recommendedUrls:
+        for recommendedUrl in recommendedArticles[articleListName]:
             if recommendedUrl == visitedPage["url"]:
-                recommendedUrls.remove(recommendedUrl)
+                recommendedArticles.remove(recommendedUrl)
                 noRemovedArticles += 1
             else:
                 pass
