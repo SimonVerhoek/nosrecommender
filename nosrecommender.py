@@ -138,6 +138,18 @@ def main():
     processBrowsingHistory()
 
 def processBrowsingHistory():
+    """
+    Starts a timer to check periodically for
+    a JSON file with urls visited by the user.
+    Restarts itself until a file is found.
+    If a file is found, it gets the content of 
+    the given urls.
+    -   interval should be an integer in 
+        seconds.
+    -   historyFileName should be a string containing
+        the name of a JSON file with therein
+        a list strings of urls.
+    """    
     time.sleep(interval)
 
     if checkIfFileExists(historyFileName) == True:
@@ -148,7 +160,7 @@ def processBrowsingHistory():
         Grab a local .json file from your computer,
         containing the urls visited by the user.
         """
-        browsingHistory = getBrowsingHistory(interval, historyFileName)
+        browsingHistory = getBrowsingHistory(historyFileName)
 
         print
         print "===== STEP 2: GETTING THE RECOMMENDED ARTICLES ====="
@@ -190,15 +202,12 @@ def processBrowsingHistory():
     processBrowsingHistory()
 
 
-def getBrowsingHistory(interval, historyFileName):
+def getBrowsingHistory(historyFileName):
     """
-    Starts a timer to check periodically for
-    a JSON file with urls visited by the user.
-    Restarts itself until a file is found.
-    If a file is found, it gets the content of 
-    the given urls.
-    -   interval should be an integer in 
-        seconds.
+    Imports JSON file with visited urls, scrapes 
+    additional content and returns it in an
+    ElasticSearch-friendly dictionary. Deletes
+    JSON file after receiving the content.
     -   historyFileName should be a string containing
         the name of a JSON file with therein
         a list strings of urls.
