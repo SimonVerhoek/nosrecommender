@@ -514,8 +514,8 @@ def addRecommendations(articles, articleListName, recommendationsPage):
     # open html file
     htmlDoc = open(recommendationsPage)
     soup = BeautifulSoup(htmlDoc)
-    
-    # remove any articles there
+
+    # remove any previously recommended articles
     for li in soup.find_all("li"):
         li.replaceWith("")
 
@@ -538,8 +538,6 @@ def addRecommendations(articles, articleListName, recommendationsPage):
             "</a>",
             "</li>" ]
 
-        
-
         # find correct <ul> tag
         indexArticleList = soup.find("ul", {"class":"list-vertical padded-small"})
 
@@ -547,17 +545,17 @@ def addRecommendations(articles, articleListName, recommendationsPage):
         for elements in articleBlock:
             indexArticleList.append(elements)
 
-        # correctly format html tags
-        html = soup.prettify(formatter=None)
+    # correctly format html tags
+    html = soup.prettify(formatter=None)
 
-        htmlDoc.close()
+    htmlDoc.close()
 
-        # overwrite index file
-        with open(recommendationsPage, "wb") as file:
-            # file is encoded to prevent "'ascii' codec can't 
-            # encode character [...] in position [...]: 
-            # ordinal not in range([...])" error
-            file.write(html.encode("utf-8"))
+    # overwrite index file
+    with open(recommendationsPage, "wb") as file:
+        # file is encoded to prevent "'ascii' codec can't 
+        # encode character [...] in position [...]: 
+        # ordinal not in range([...])" error
+        file.write(html.encode("utf-8"))
 
     print str(len(articles[articleListName])) + " new articles recommended."
 
