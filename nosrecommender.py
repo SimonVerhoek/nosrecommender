@@ -85,7 +85,7 @@ mapping = { u'URL': {       'boost': 1.0,
                             'index': 'analyzed',
                             'store': 'yes',
                             'type': u'string',
-                            "term_vector" : "with_positions_offsets"},                }
+                            "term_vector" : "with_positions_offsets"}}
 
 setting = {
     "analysis": {
@@ -126,6 +126,8 @@ def main():
     local .json file.
     """
     #newsArchive = importJson(localArchive)
+
+    # print "Skipped."
 
     print
     print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
