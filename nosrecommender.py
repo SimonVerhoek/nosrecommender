@@ -126,8 +126,8 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    #urls = scrapeUrls(noDays, date)
-    #newsArchive = getData(urls, articleListName)
+    urls = scrapeUrls(noDays, date)
+    newsArchive = getData(urls, articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -136,8 +136,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    newsArchive = importJson(localArchive)
-
+    #newsArchive = importJson(localArchive)
     #print "Skipped."
 
     print
@@ -146,6 +145,16 @@ def main():
     """
     Create an index in ElasticSearch, and add
     the news archive to this.
+    """
+    createIndex(newsArchive)
+    #print "Skipped."
+
+    #processBrowsingHistory()
+
+def createIndex(newsArchive):
+    """
+    Creates an index in ElasticSearch and adds 
+    a news archive in one call.
     -   Once an index of the given name already exists, 
         initialising a new one will replace the current
         one. 
@@ -156,10 +165,6 @@ def main():
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
 
-    #print "Skipped."
-
-    #processBrowsingHistory()
-
 def processBrowsingHistory():
     """
     Starts a timer to check periodically for
@@ -167,11 +172,6 @@ def processBrowsingHistory():
     Restarts itself until a file is found.
     If a file is found, it gets the content of 
     the given urls.
-    -   interval should be an integer in 
-        seconds.
-    -   historyFileName should be a string containing
-        the name of a JSON file with therein
-        a list strings of urls.
     """    
     time.sleep(interval)
 
@@ -225,7 +225,6 @@ def processBrowsingHistory():
     else:
         processBrowsingHistory()
     
-
 
 def getBrowsingHistory(historyFileName):
     """
