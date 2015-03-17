@@ -507,7 +507,6 @@ def getRecommendedArticles(visitedArticles, articleListName):
     q = {"bool": {"should": query}} 
     returns = connection.search(query = q, index = indexName)
 
-
     for item in returns[:noReccomendations]:
         print str(item["title"]) + ": " + str(item._meta.score)
         articleList.append(item)
