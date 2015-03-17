@@ -126,8 +126,7 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    urls = scrapeUrls(noDays, date)
-    newsArchive = getData(urls, articleListName)
+    newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -149,7 +148,7 @@ def main():
     createIndex(newsArchive)
     #print "Skipped."
 
-    #processBrowsingHistory()
+    processBrowsingHistory()
 
 def createIndex(newsArchive):
     """
@@ -510,7 +509,7 @@ def getRecommendedArticles(visitedArticles, articleListName):
     returns = connection.search(query = q, index = indexName)
 
     for item in returns[:noReccomendations]:
-        print str(item["title"]) + ": " + str(item._meta.score)
+        print str(item["title"].encode('utf-8')) + ": " + str(item._meta.score)
         articleList.append(item)
     print
     print "10 articles recommended."
