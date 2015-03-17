@@ -509,8 +509,9 @@ def getRecommendedArticles(visitedArticles, articleListName):
 
 
     for item in returns[:noReccomendations]:
+        print str(item["title"]) + ": " + str(item._meta.score)
         articleList.append(item)
-
+    print
     print "10 articles recommended."
     return articles
 
