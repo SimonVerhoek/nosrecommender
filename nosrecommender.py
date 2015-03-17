@@ -49,6 +49,10 @@ noDays = 4
 # recommended articles will be shown
 recommendationsPage = "index.html"
 
+# choose correct encoding, based on the
+# article's language
+encoding = "latin_1"
+
 # number of articles that user needs to 
 # read before recommendation cycle ends
 NoArticlesToBeRead = 1
@@ -126,16 +130,16 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
+    newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
-    #exportJson(newsArchive, archiveName)
+    exportJson(newsArchive, archiveName)
 
     """ 
     OR: import a list of urls from a
     local .json file.
     """
-    newsArchive = importJson(localArchive)
+    #newsArchive = importJson(localArchive)
     #print "Skipped."
 
     print
@@ -145,7 +149,7 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    #createIndex(newsArchive)
+    createIndex(newsArchive)
     #print "Skipped."
 
     processBrowsingHistory()
@@ -509,7 +513,7 @@ def getRecommendedArticles(visitedArticles, articleListName, noReccomendations):
     returns = connection.search(query = q, index = indexName)
 
     for item in returns[:noReccomendations]:
-        print str(item["title"].encode('utf-8')) + ": " + str(item._meta.score)
+        print str(item["title"].encode(encoding)) + ": " + str(item._meta.score)
         articleList.append(item)
     print
     print str(noReccomendations) + " articles recommended."
@@ -594,7 +598,7 @@ def addRecommendations(articles, articleListName, recommendationsPage):
         # file is encoded to prevent "'ascii' codec can't 
         # encode character [...] in position [...]: 
         # ordinal not in range([...])" error
-        file.write(html.encode("utf-8"))
+        file.write(html.encode(encoding))
 
     print str(len(articles[articleListName])) + " new articles recommended."
 
@@ -610,6 +614,7 @@ def exportJson(articles, outputFileName):
     outFile.close()
 
     print "Exported articles to " + outputFileName + ".json."
+    print
 
 
 def exportCsv(articles, outputFileName):
@@ -622,9 +627,10 @@ def exportCsv(articles, outputFileName):
 
     for article in articles[articleListName]:
         csv.write("\n")      
-        csv.write(article["title"].encode('utf-8'))
+        csv.write(article["title"].encode(encoding))
 
     print "Exported articles to " + outputFileName + ".csv."
+    print
 
 # execute main
 if __name__ == "__main__":
