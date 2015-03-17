@@ -24,8 +24,6 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 # history is checked
 interval = 5  
 
-urls = []
-
 visitedUrlsList = []
 
 # input arguments for checkIfFileExists().
@@ -271,6 +269,8 @@ def scrapeUrls(noDays, date):
     -   date should be datetime.today().
     """
     date = datetime.today()
+
+    urls = []
 
     for i in xrange(0, noDays):
     
