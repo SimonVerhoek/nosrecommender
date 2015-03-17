@@ -628,6 +628,7 @@ def exportCsv(articles, outputFileName):
     """
     writer = csv.writer(open(outputFileName + ".csv", "w+"))
 
+    writer.writerow(["Titel", "Score"])
     for article in articles[articleListName]: 
         writer.writerow([article["title"].encode(encoding), article["score"]])
 
