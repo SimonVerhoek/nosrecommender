@@ -49,15 +49,17 @@ noDays = 4
 # recommended articles will be shown
 recommendationsPage = "index.html"
 
+NoArticlesToBeRead = 10
+
 # how many recommendations should be given
-noReccomendations = 10
+noReccomendations = 30
 
 # if you want to create an index from a
 # local file, give correct filepath here
 localArchive = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
 
 # name of exported file
-outputFileName = "output"
+outputFileName = "recommendations"
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'URL': {       'boost': 1.0,
@@ -196,16 +198,7 @@ def processBrowsingHistory():
         #recommendedArticles = getData(recommendedUrls, articleListName)
         addRecommendations(recommendedArticles, articleListName, recommendationsPage)
 
-        print
-        print "===== STEP 4: EXPORTING DATA ====="
-        print
-        """
-        If you want to export the articles,
-        you can choose to do so here.
-        """
-        print "Nothing exported."
-        #exportJson(newsArchive, outputFileName)
-        #exportCsv(articles, outputFileName)
+        
 
         print
         print "===== BROWSING HISTORY PROCESSED - CYCLE DONE ====="
@@ -213,7 +206,20 @@ def processBrowsingHistory():
     else:
         print "Waiting for file with browsing history..."
 
-    processBrowsingHistory()
+    if len(visitedUrlsList) == NoArticlesToBeRead:
+        print
+        print "===== STEP 4: EXPORTING DATA ====="
+        print
+        """
+        If you want to export the articles,
+        you can choose to do so here.
+        """
+        #print "Nothing exported."
+        exportJson(recommendedArticles, outputFileName)
+        exportCsv(recommendedArticles, outputFileName)
+    else:
+        processBrowsingHistory()
+    
 
 
 def getBrowsingHistory(historyFileName):
@@ -518,8 +524,8 @@ def checkIfRead(browsingHistory, recommendedArticles):
 
     for visitedPage in browsingHistory[articleListName]:
         for recommendedUrl in recommendedArticles[articleListName]:
-            if recommendedUrl == visitedPage["url"]:
-                recommendedArticles.remove(recommendedUrl)
+            if recommendedUrl["url"] == visitedPage["url"]:
+                recommendedArticles[articleListName].remove(recommendedUrl)
                 noRemovedArticles += 1
             else:
                 pass
