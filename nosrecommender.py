@@ -60,13 +60,10 @@ noReccomendations = 30
 archiveName = "archive"
 # if you want to create an index from a
 # local file, give correct filepath here
-localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + 
-                archiveName + ".json"
+localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + archiveName + ".json"
 
 # name of any exported recommendations file(s)
 outputFileName = "recommendations"
-
-
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'URL': {       'boost': 1.0,
@@ -141,7 +138,7 @@ def main():
     """
     newsArchive = importJson(localArchive)
 
-    # print "Skipped."
+    #print "Skipped."
 
     print
     print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
@@ -158,6 +155,8 @@ def main():
     """
     initIndex(indexName, connection, mapping, setting)
     addToIndex(indexName, connection, newsArchive)
+
+    #print "Skipped."
 
     #processBrowsingHistory()
 
