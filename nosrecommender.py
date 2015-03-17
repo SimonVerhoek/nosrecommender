@@ -126,7 +126,7 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    newsArchive = getData(scrapeUrls(noDays, date), articleListName)
+    #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -135,7 +135,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    #newsArchive = importJson(localArchive)
+    newsArchive = importJson(localArchive)
     #print "Skipped."
 
     print
@@ -145,7 +145,7 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    createIndex(newsArchive)
+    #createIndex(newsArchive)
     #print "Skipped."
 
     processBrowsingHistory()
@@ -193,7 +193,7 @@ def processBrowsingHistory():
         history with its news archive, and recommend you
         the most relevant new articles.
         """
-        recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
+        recommendedArticles = getRecommendedArticles(browsingHistory, articleListName, noReccomendations)
         checkIfRead(browsingHistory, recommendedArticles)
         
         print
@@ -484,7 +484,7 @@ def addToIndex(indexName, connection, articles):
     print
 
 
-def getRecommendedArticles(visitedArticles, articleListName):
+def getRecommendedArticles(visitedArticles, articleListName, noReccomendations):
     """
     Gets recommended news articles. Compares 
     visitedArticles to an ElasticSearch index.
@@ -512,7 +512,7 @@ def getRecommendedArticles(visitedArticles, articleListName):
         print str(item["title"].encode('utf-8')) + ": " + str(item._meta.score)
         articleList.append(item)
     print
-    print "10 articles recommended."
+    print str(noReccomendations) + " articles recommended."
     return articles
 
 
