@@ -56,12 +56,17 @@ NoArticlesToBeRead = 1
 # the number of recommendations that should be given
 noReccomendations = 30
 
+# name of exported news archive
+archiveName = "archive"
 # if you want to create an index from a
 # local file, give correct filepath here
-localArchive = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
+localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + 
+                archiveName + ".json"
 
-# name of any exported file(s)
+# name of any exported recommendations file(s)
 outputFileName = "recommendations"
+
+
 
 # how the data should be formatted in ElasticSearch
 mapping = { u'URL': {       'boost': 1.0,
@@ -127,11 +132,14 @@ def main():
     #urls = scrapeUrls(noDays, date)
     #newsArchive = getData(urls, articleListName)
 
+    # directly export it for later use
+    #exportJson(newsArchive, archiveName)
+
     """ 
     OR: import a list of urls from a
     local .json file.
     """
-    #newsArchive = importJson(localArchive)
+    newsArchive = importJson(localArchive)
 
     # print "Skipped."
 
@@ -148,10 +156,10 @@ def main():
         addToIndex will be appended to the existing index.
         WARNING: this may result into duplicate entries!
     """
-    #initIndex(indexName, connection, mapping, setting)
-    #addToIndex(indexName, connection, newsArchive)
+    initIndex(indexName, connection, mapping, setting)
+    addToIndex(indexName, connection, newsArchive)
 
-    processBrowsingHistory()
+    #processBrowsingHistory()
 
 def processBrowsingHistory():
     """
@@ -190,17 +198,13 @@ def processBrowsingHistory():
         recommendedArticles = getRecommendedArticles(browsingHistory, articleListName)
         checkIfRead(browsingHistory, recommendedArticles)
         
-
         print
         print "===== STEP 3: SHOWING THE RECOMMENDED ARTICLES TO THE USER ====="
         print
         """
         Add articles to recommendations HTML page
         """
-        #recommendedArticles = getData(recommendedUrls, articleListName)
         addRecommendations(recommendedArticles, articleListName, recommendationsPage)
-
-        
 
         print
         print "===== BROWSING HISTORY PROCESSED - CYCLE DONE ====="
