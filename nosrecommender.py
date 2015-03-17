@@ -243,16 +243,10 @@ def getBrowsingHistory(historyFileName):
     visitedUrls = importJson(historyFileName)
     os.remove(historyFileName)
 
-    if type(visitedUrls) == list:
-        print "is list"
-    elif type(visitedUrls) == dict:
+    if type(visitedUrls) == dict:
         visitedUrls = visitedUrls.values()
-        print "is dict"
 
     visitedUrlsList.extend(visitedUrls)
-    print "visitedurlslist = " + str(visitedUrlsList)
-
-    #return getData(visitedUrls, articleListName)
 
 
 def checkIfFileExists(fileName):
@@ -432,7 +426,6 @@ def importJson(localFile):
     content = json.loads(open(localFile, "rb").read())
 
     print "Imported content from " + localFile + "."
-    print
     return content
 
 
@@ -516,9 +509,8 @@ def getRecommendedArticles(visitedArticles, articleListName, noReccomendations):
     for item in returns[:noReccomendations]:
         # add ES' relevance score
         item["score"] = item._meta.score
-        print str(item["title"].encode(encoding)) + ": " + str(item["score"])
         articleList.append(item)
-    print
+
     print str(noReccomendations) + " articles recommended."
     return articles
 
@@ -554,7 +546,6 @@ def addRecommendations(articles, articleListName, recommendationsPage):
         path to the HTML file in which to paste the 
         recommended articles.
     """
-    print
     print 'Writing recommended files to "' + recommendationsPage + '"...'
 
     # open html file
