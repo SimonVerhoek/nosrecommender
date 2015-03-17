@@ -24,10 +24,12 @@ opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 # history is checked
 interval = 5  
 
+# list of user's browsing history in urls 
+# that builds up as long as application is running
 visitedUrlsList = []
 
-# input arguments for checkIfFileExists().
-historyFileName = "urlsonly.json"   # name of file
+# name of file that is passed on by JS extension.
+historyFileName = "urlsonly.json"
 
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
@@ -47,16 +49,18 @@ noDays = 4
 # recommended articles will be shown
 recommendationsPage = "index.html"
 
+# number of articles that user needs to 
+# read before recommendation cycle ends
 NoArticlesToBeRead = 1
 
-# how many recommendations should be given
+# the number of recommendations that should be given
 noReccomendations = 30
 
 # if you want to create an index from a
 # local file, give correct filepath here
 localArchive = "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/output.json"
 
-# name of exported file
+# name of any exported file(s)
 outputFileName = "recommendations"
 
 # how the data should be formatted in ElasticSearch
