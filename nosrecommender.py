@@ -49,7 +49,7 @@ noDays = 4
 # recommended articles will be shown
 recommendationsPage = "index.html"
 
-NoArticlesToBeRead = 10
+NoArticlesToBeRead = 1
 
 # how many recommendations should be given
 noReccomendations = 30
@@ -600,7 +600,7 @@ def exportJson(articles, outputFileName):
     -   articles should be a dictionary.
     -   outputFileName should be a string.
     """
-    outFile = open(outputFileName + ".json", "w")
+    outFile = open(outputFileName + ".json", "w+")
     json.dump(articles, outFile, indent = 4)
     outFile.close()
 
@@ -613,20 +613,11 @@ def exportCsv(articles, outputFileName):
     -   articles should be a dictionary.
     -   outputFileName should be a string.
     """
-    csv = open(outputFileName + ".csv", "a+")
+    csv = open(outputFileName + ".csv", "w+")
 
     for article in articles[articleListName]:
-        csv.write("\n")
-        csv.write(article["url"])
-        csv.write(",")        
-        csv.write(article["title"])
-        csv.write(",")
-        for category in article["categories"]:
-            csv.write(category)
-        csv.write(",")
-        csv.write(article["body"])
-        csv.write(",")
-        csv.write(article["image"])
+        csv.write("\n")      
+        csv.write(article["title"].encode('utf-8'))
 
     print "Exported articles to " + outputFileName + ".csv."
 
