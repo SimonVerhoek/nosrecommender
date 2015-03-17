@@ -11,6 +11,7 @@ import re
 import cookielib, urllib2
 from cookielib import CookieJar
 import json
+import csv
 from bs4 import BeautifulSoup
 import os.path
 import time
@@ -625,11 +626,10 @@ def exportCsv(articles, outputFileName):
     -   articles should be a dictionary.
     -   outputFileName should be a string.
     """
-    csv = open(outputFileName + ".csv", "w+")
+    writer = csv.writer(open(outputFileName + ".csv", "w+"))
 
-    for article in articles[articleListName]:
-        csv.write("\n")      
-        csv.write(article["title"].encode(encoding))
+    for article in articles[articleListName]: 
+        writer.writerow([article["title"].encode(encoding), article["score"]])
 
     print "Exported articles to " + outputFileName + ".csv."
     print
