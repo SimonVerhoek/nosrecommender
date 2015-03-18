@@ -150,7 +150,7 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    #createIndex(newsArchive)
+    createIndex(newsArchive)
     #print "Skipped."
 
     processBrowsingHistory()
@@ -215,7 +215,7 @@ def processBrowsingHistory():
     else:
         print "Waiting for file with browsing history..."
 
-    if len(visitedUrlsList) == NoArticlesToBeRead:
+    if len(visitedUrlsList) >= NoArticlesToBeRead:
         print
         print "===== STEP 4: EXPORTING DATA ====="
         print
