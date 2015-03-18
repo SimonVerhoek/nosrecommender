@@ -131,7 +131,7 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
+    newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -140,7 +140,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    newsArchive = importJson(localArchive)
+    #newsArchive = importJson(localArchive)
     #print "Skipped."
 
     print
@@ -166,8 +166,8 @@ def createIndex(newsArchive):
         addToIndex will be appended to the existing index.
         WARNING: this may result into duplicate entries!
     """
-    #initIndex(indexName, connection, mapping, setting)
-    #addToIndex(indexName, connection, newsArchive)
+    initIndex(indexName, connection, mapping, setting)
+    addToIndex(indexName, connection, newsArchive)
 
 def processBrowsingHistory():
     """
