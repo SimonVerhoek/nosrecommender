@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 import os.path
 import time
 
+from classes import Article
+
 # needed for scraper to open link
 cj = CookieJar()
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
@@ -44,7 +46,7 @@ articleListName = "NOS Nieuws"
 # set number of days back in time to
 # be scraped. If set to 1, only today's
 # archive is scraped.
-noDays = 4
+noDays = 1
 
 # location of HTML file to open in which
 # recommended articles will be shown
@@ -131,7 +133,7 @@ def main():
     """ 
     EITHER: scrape the NOS news archive 
     """
-    newsArchive = getData(scrapeUrls(noDays, date), articleListName)
+    #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -140,7 +142,7 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    #newsArchive = importJson(localArchive)
+    newsArchive = importJson(localArchive)
     #print "Skipped."
 
     print
@@ -150,7 +152,7 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    createIndex(newsArchive)
+    #createIndex(newsArchive)
     #print "Skipped."
 
     processBrowsingHistory()
@@ -344,17 +346,11 @@ def getData(urls, articleListName):
         body = cleanContent("body", paragraphs)
         image = cleanContent("image", images)
 
-        # create article dict
-        article = {}
+        # create article class instance
+        article = Article(link, title, categories, body, image)
 
-        article["url"] = link
-        article["title"] = title
-        article["categories"] = categories
-        article["body"] = body
-        article["image"] = image
-
-        # add article dict to list of articles
-        articleList.append(article)
+        # add article as dict to list of articles
+        articleList.append(article.__dict__)
 
     print "All articles scraped!"
     return articles
