@@ -21,3 +21,17 @@ class Article:
 		print "categories =", self.categories
 		print "body =", self.body
 		print "image =", self.image
+
+class Index(dict):
+
+	indexCount = 0
+
+	def __init__(self, key, value):
+		self.__setitem__(key, value)
+
+	def addArticle(article):
+		
+
+	def displayIndex(self):
+		print self
+
