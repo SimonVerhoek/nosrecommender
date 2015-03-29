@@ -22,16 +22,50 @@ class Article:
 		print "body =", self.body
 		print "image =", self.image
 
+from pyes import *
+
+# create a connection with ElasticSearch
+connection = ES('localhost:9200')
+
+setting = {
+    "analysis": {
+        "filter": {
+            "dutch_stop": {
+                "type": "stop",
+                "stopwords": "_dutch_" 
+            }
+        },
+        "analyzer": {
+            "dutch": {
+                "tokenizer": "standard",
+                "filter": [
+                    "lowercase",
+                    "dutch_stop"
+                ]
+            }
+        }
+    }
+}
+
 class Index(dict):
 
 	indexCount = 0
 
+	indexName = "a"
+
 	def __init__(self, key, value):
+		self.indexName = key
 		self.__setitem__(key, value)
 
 	def addArticle(self, key, article):
 		self[key].append(article) 
 
+	def build(self):
+		connection.indices.create_index(self.indexName, setting)
+
 	def displayIndex(self):
-		print self
+		print "index: ", self
+
+	def displayIndexName(self):
+		print "indexName: ", self.indexName
 
