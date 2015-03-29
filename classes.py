@@ -25,6 +25,8 @@ class Article:
 from pyes import *
 
 
+# create a connection with ElasticSearch
+connection = ES('localhost:9200')
 
 
 class Index(dict):
@@ -42,8 +44,6 @@ class Index(dict):
 		self[key].append(article) 
 
 	def build(self, setting):
-		# create a connection with ElasticSearch
-		connection = ES('localhost:9200')
 
 		try:
 			connection.indices.delete_index(self.indexName)
@@ -52,6 +52,15 @@ class Index(dict):
 
 		connection.indices.create_index(self.indexName, setting)
 		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
+
+	def remove(self):
+		try:
+			connection.indices.delete_index(self.indexName)
+		except:
+			pass
+
+		print "index", self.indexName, "removed from ElasticSearch."
+
 
 	def displayCount(self):
 		print "Number of indices is", Index.indexCount
