@@ -24,8 +24,6 @@ class Article:
 
 from pyes import *
 
-# create a connection with ElasticSearch
-connection = ES('localhost:9200')
 
 
 
@@ -33,7 +31,7 @@ class Index(dict):
 
 	indexCount = 0
 
-	indexName = "a"
+	indexName = ""
 
 	def __init__(self, key, value):
 		self.indexName = key
@@ -43,6 +41,14 @@ class Index(dict):
 		self[key].append(article) 
 
 	def build(self, setting):
+		# create a connection with ElasticSearch
+		connection = ES('localhost:9200')
+		
+		try:
+			connection.indices.delete_index(self.indexName)
+		except:
+			pass
+
 		connection.indices.create_index(self.indexName, setting)
 
 	def displayIndex(self):
