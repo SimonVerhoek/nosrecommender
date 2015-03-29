@@ -36,6 +36,7 @@ class Index(dict):
 	def __init__(self, key, value):
 		self.indexName = key
 		self.__setitem__(key, value)
+		Index.indexCount += 1
 
 	def addArticle(self, key, article):
 		self[key].append(article) 
@@ -43,13 +44,16 @@ class Index(dict):
 	def build(self, setting):
 		# create a connection with ElasticSearch
 		connection = ES('localhost:9200')
-		
+
 		try:
 			connection.indices.delete_index(self.indexName)
 		except:
 			pass
 
 		connection.indices.create_index(self.indexName, setting)
+
+	def displayCount(self):
+		print "Number of indices is ", Index.indexCount
 
 	def displayIndex(self):
 		print "index: ", self
