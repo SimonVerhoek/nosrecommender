@@ -27,25 +27,7 @@ from pyes import *
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
 
-setting = {
-    "analysis": {
-        "filter": {
-            "dutch_stop": {
-                "type": "stop",
-                "stopwords": "_dutch_" 
-            }
-        },
-        "analyzer": {
-            "dutch": {
-                "tokenizer": "standard",
-                "filter": [
-                    "lowercase",
-                    "dutch_stop"
-                ]
-            }
-        }
-    }
-}
+
 
 class Index(dict):
 
@@ -60,7 +42,7 @@ class Index(dict):
 	def addArticle(self, key, article):
 		self[key].append(article) 
 
-	def build(self):
+	def build(self, setting):
 		connection.indices.create_index(self.indexName, setting)
 
 	def displayIndex(self):
