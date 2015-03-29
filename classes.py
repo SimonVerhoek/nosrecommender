@@ -29,8 +29,8 @@ class Index(dict):
 	def __init__(self, key, value):
 		self.__setitem__(key, value)
 
-	def addArticle(article):
-		
+	def addArticle(self, key, article):
+		self[key].append(article) 
 
 	def displayIndex(self):
 		print self
