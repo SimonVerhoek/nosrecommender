@@ -51,13 +51,14 @@ class Index(dict):
 			pass
 
 		connection.indices.create_index(self.indexName, setting)
+		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
 
 	def displayCount(self):
-		print "Number of indices is ", Index.indexCount
+		print "Number of indices is", Index.indexCount
 
 	def displayIndex(self):
-		print "index: ", self
+		print "index:", self
 
 	def displayIndexName(self):
-		print "indexName: ", self.indexName
+		print "indexName:", self.indexName
 
