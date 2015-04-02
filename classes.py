@@ -55,9 +55,9 @@ class Index(dict):
 		"""
 		Adds a given article to the index.
 		"""
-		self[self.indexName].append(article) 
+		self[self.indexName].append(article)
 
-	def build(self, setting):
+	def build(self, setting, mapping):
 		"""
 		Builds  ElasticSearch.
 		"""
@@ -68,7 +68,17 @@ class Index(dict):
 			pass
 
 		connection.indices.create_index(self.indexName, setting)
+		connection.indices.put_mapping("test_type", {'properties':mapping}, [self.indexName])
 		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
+
+	def addToIndex(self):
+		for i in self[self.indexName]:
+			connection.index({  "title":i["title"],
+	                            "categories":i["categories"],
+	                            "body":i["body"], 
+	                            "url":i["url"], 
+	                            "image":i["image"]},
+	                            self.indexName, "test-type")
 
 	def remove(self):
 		"""
