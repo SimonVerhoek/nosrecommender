@@ -91,14 +91,14 @@ class Index(dict):
 		except:
 			pass
 
-	def displayCount(self):
-		print "Number of indices is", Index.indexCount
-
 	def displayIndex(self):
 		print "index:", self
 
 	def displayIndexName(self):
 		print "indexName:", self.indexName
+
+	def displayIndexCount(self):
+		print "Number of indices:", Index.indexCount
 
 	def displayArticleCount(self):
 		print "Number of articles:", len(self[self.indexName])
