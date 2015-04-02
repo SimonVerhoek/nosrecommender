@@ -100,3 +100,6 @@ class Index(dict):
 	def displayIndexName(self):
 		print "indexName:", self.indexName
 
+	def displayArticleCount(self):
+		print "Number of articles:", len(self[self.indexName])
+
