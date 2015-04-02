@@ -51,11 +51,11 @@ class Index(dict):
 		self.__setitem__(key, value)
 		Index.indexCount += 1
 
-	def addArticle(self, key, article):
+	def addArticle(self, article):
 		"""
 		Adds a given article to the index.
 		"""
-		self[key].append(article) 
+		self[self.indexName].append(article) 
 
 	def build(self, setting):
 		"""
