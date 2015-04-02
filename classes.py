@@ -79,6 +79,7 @@ class Index(dict):
 	                            "url":i["url"], 
 	                            "image":i["image"]},
 	                            self.indexName, "test-type")
+		print 'Articles added to "' + self.indexName + '" in ElasticSearch.'
 
 	def remove(self):
 		"""
