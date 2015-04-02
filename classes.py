@@ -30,23 +30,40 @@ connection = ES('localhost:9200')
 
 
 class Index(dict):
-
+	"""
+	Creates ElasticSearch-friendly dicts.
+	Product looks like this:
+	{indexname: listofarticles}, where:
+	-	indexname = a string with the name of the index
+		how it should appear in ElasticSearch
+	-	listofarticles = a list containing at least one
+		dict (so like this: [{article1},...] )
+	"""
 	indexCount = 0
 
 	indexName = ""
 
 	def __init__(self, key, value):
+		"""
+		Instantiates a {key: value} dict.
+		"""
 		self.indexName = key
 		self.__setitem__(key, value)
 		Index.indexCount += 1
 
 	def addArticle(self, key, article):
+		"""
+		Adds a given article to the index.
+		"""
 		self[key].append(article) 
 
 	def build(self, setting):
-
+		"""
+		Builds  ElasticSearch.
+		"""
 		try:
 			connection.indices.delete_index(self.indexName)
+			print 'Index with name "' + self.indexName + '" already in Elasticsearch, removed it.'
 		except:
 			pass
 
@@ -54,13 +71,14 @@ class Index(dict):
 		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
 
 	def remove(self):
+		"""
+		Removes the index from ElasticSearch.
+		"""
 		try:
 			connection.indices.delete_index(self.indexName)
+			print "index", self.indexName, "removed from ElasticSearch."
 		except:
 			pass
-
-		print "index", self.indexName, "removed from ElasticSearch."
-
 
 	def displayCount(self):
 		print "Number of indices is", Index.indexCount
