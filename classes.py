@@ -59,7 +59,7 @@ class Index(dict):
 
 	def build(self, setting, mapping):
 		"""
-		Builds  ElasticSearch.
+		Builds index in ElasticSearch.
 		"""
 		try:
 			connection.indices.delete_index(self.indexName)
