@@ -53,7 +53,8 @@ class Index(dict):
 
 	def addArticle(self, article):
 		"""
-		Adds a given article to the index.
+		Adds a given article to the instance
+		article list.
 		"""
 		self[self.indexName].append(article)
 
@@ -72,13 +73,13 @@ class Index(dict):
 		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
 
 	def indexArticles(self):
-		for i in self[self.indexName]:
-			connection.index({  "title":i["title"],
-	                            "categories":i["categories"],
-	                            "body":i["body"], 
-	                            "url":i["url"], 
-	                            "image":i["image"]},
-	                            self.indexName, "test-type")
+		"""
+		Adds all articles of instance to
+		ElasticSearch index.
+		"""
+		for article in self[self.indexName]:
+			connection.index(article, self.indexName, "test-type")
+
 		print 'Articles added to "' + self.indexName + '" in ElasticSearch.'
 
 	def remove(self):
