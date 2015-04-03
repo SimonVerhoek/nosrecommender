@@ -22,12 +22,11 @@ class Article:
 		print "body =", self.body
 		print "image =", self.image
 
-from pyes import *
 
+from pyes import *
 
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
-
 
 class Index(dict):
 	"""
@@ -55,12 +54,19 @@ class Index(dict):
 		"""
 		Adds a given article to the instance
 		article list.
+		- article should be a dict of an article.
 		"""
 		self[self.indexName].append(article)
 
 	def build(self, setting, mapping):
 		"""
 		Builds index in ElasticSearch.
+		-   mapping should be a dictionary containing
+        	the inner details of the ElasticSearch
+        	index.
+    	-   setting should be a dictionary containing
+        	the settings for the ElasticSearch index
+        	to be initialised.
 		"""
 		try:
 			connection.indices.delete_index(self.indexName)
