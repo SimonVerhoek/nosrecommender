@@ -7,18 +7,16 @@ class Article(dict):
 	def __init__(self, **kwargs):
 		for key, value in kwargs.items():
 			self.update(kwargs)
-			
-		self.articleCount += 1
+
+		Article.articleCount += 1
 
 	def displayCount(self):
 		print "Number of articles is %d" % Article.articleCount
 
 	def displayArticle(self):
-		print "url =", self.url
-		print "title =", self.title
-		print "categories =", self.categories
-		print "body =", self.body
-		print "image =", self.image
+		for key, value in self.items():
+			print key, "=", value
+		
 
 
 from pyes import *
