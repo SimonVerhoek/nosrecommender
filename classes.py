@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 class Article(dict):
-
+	"""
+	Creates a dict for news articles.
+	It accepts a variable amount of key-value pairs
+	as key = "value".
+	"""
 	articleCount = 0
 
 	def __init__(self, **kwargs):
