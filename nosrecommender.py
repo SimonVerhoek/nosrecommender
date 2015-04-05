@@ -152,7 +152,7 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    #createIndex(newsArchive)
+    createIndex(newsArchive)
     #print "Skipped."
 
     processBrowsingHistory()
@@ -347,10 +347,14 @@ def getData(urls, articleListName):
         image = cleanContent("image", images)
 
         # create article class instance
-        article = Article(link, title, categories, body, image)
+        article = Article(  url = link, 
+                            title = title,
+                            categories = categories,
+                            body = body, 
+                            image = image)
 
         # add article as dict to list of articles
-        articleList.append(article.__dict__)
+        articleList.append(article)
 
     print "All articles scraped!"
     return articles

@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 
-class Article:
-
+class Article(dict):
+	"""
+	Creates a dict for news articles.
+	It accepts a variable amount of key-value pairs
+	as key = "value".
+	"""
 	articleCount = 0
 
-	def __init__(self, url, title, categories, body, image):
-		self.url = url
-		self.title = title
-		self.categories = categories
-		self.body = body
-		self.image = image
+	def __init__(self, **kwargs):
+		for key, value in kwargs.items():
+			self.update(kwargs)
+
 		Article.articleCount += 1
 
 	def displayCount(self):
 		print "Number of articles is %d" % Article.articleCount
 
 	def displayArticle(self):
-		print "url =", self.url
-		print "title =", self.title
-		print "categories =", self.categories
-		print "body =", self.body
-		print "image =", self.image
+		for key, value in self.items():
+			print key, "=", value
+		
 
 
 from pyes import *
