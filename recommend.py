@@ -126,13 +126,14 @@ setting = {
 
     # import news archive
 
+    # if data needs to be preprocessed
+        # preprocess
+
     # instantiate index
     # build index
-    # for every article in list
-        # add to index instance
     # index articles
 
-# WAITING FOR INPUT
+# WAIT FOR INPUT
 
     # if JSON found:
         # get article data
@@ -169,8 +170,16 @@ def main():
     print newsArchive
     #print "Skipped."
 
-    newsArchive = sanitize_input(newsArchive)
-    print newsArchive
+    print
+    print "===== PRESTEP 2: PREPROCESSING NEWS ARCHIVE ====="
+    print
+    """
+    Preprocess news archive if needed.
+    """
+    # check index name?
+    # check encoding
+
+    print "Skipped."
 
     print
     print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
@@ -179,21 +188,14 @@ def main():
     Create an index in ElasticSearch, and add
     the news archive to this.
     """
-    name = newsArchive.keys()[0]
-    name = name.lower()
-    name = name.replace(" ", "_")
+    # instantiate index class
+    index = Index(newsArchive.keys()[0], newsArchive.values()[0])
 
-    print name
-
-
-    index = Index(name, newsArchive.values()[0])
-
-    #print index
-
+    # create index in ElasticSearch
     Index.build(index, setting, mapping)
-    Index.indexArticles(index)
 
-    
+    # index articles
+    Index.indexArticles(index)
 
 
 def importJson(localFile):
@@ -208,21 +210,7 @@ def importJson(localFile):
     print "Imported content from " + localFile + "."
     return content
 
-def sanitize_input(newsArchive):
-    key = newsArchive.keys()[0]
-    key = key.lower()
-    key = key.replace(" ", "_")
-    print key
-
-    valueList = newsArchive.values()[0]
-    valueList = valueList.encode(encoding)
-
-    return newsArchive.encode(encoding)
-
 
 # execute main
 if __name__ == "__main__":
     main()
-
-
-
