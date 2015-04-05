@@ -182,7 +182,7 @@ def main():
     print "Skipped."
 
     print
-    print "===== PRESTEP 2: INDEXING THE NEWS ARCHIVE ====="
+    print "===== PRESTEP 3: INDEXING THE NEWS ARCHIVE ====="
     print
     """
     Create an index in ElasticSearch, and add

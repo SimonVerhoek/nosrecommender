@@ -77,6 +77,7 @@ class Index(dict):
 		connection.indices.create_index(self.indexName, setting)
 		connection.indices.put_mapping("test_type", {'properties':mapping}, [self.indexName])
 		print 'Index with name "' + self.indexName + '" added to ElasticSearch.'
+		print
 
 	def indexArticles(self):
 		"""
@@ -87,6 +88,7 @@ class Index(dict):
 			connection.index(article, self.indexName, "test-type")
 
 		print 'Articles added to "' + self.indexName + '" in ElasticSearch.'
+		print
 
 	def remove(self):
 		"""
