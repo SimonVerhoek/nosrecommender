@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 import os.path
 import time
 
-from classes import Article, Index
+from classes import Article, Archive
 
 # needed for scraper to open link
 cj = CookieJar()
@@ -189,13 +189,13 @@ def main():
     the news archive to this.
     """
     # instantiate index class
-    index = Index(newsArchive.keys()[0], newsArchive.values()[0])
+    archive = Archive(newsArchive.keys()[0], newsArchive.values()[0])
 
     # create index in ElasticSearch
-    Index.build(index, setting, mapping)
+    Archive.build_index(archive, setting, mapping)
 
     # index articles
-    Index.indexArticles(index)
+    Archive.index_articles(archive)
 
     process_browsing_history()
 
@@ -239,7 +239,7 @@ def process_browsing_history():
     #    exportJson(recommendedArticles, outputFileName)
     #    exportCsv(recommendedArticles, outputFileName)
     #else:
-        processBrowsingHistory()
+        process_browsing_history()
 
 
 def import_file(localFile):
