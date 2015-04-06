@@ -14,10 +14,10 @@ class Article(dict):
 
 		Article.articleCount += 1
 
-	def displayCount(self):
-		print "Number of articles is %d" % Article.articleCount
+	def display_articleCount(self):
+		print "Number of articles instantiated:", Article.articleCount
 
-	def displayArticle(self):
+	def display_article(self):
 		for key, value in self.items():
 			print key, "=", value
 		
