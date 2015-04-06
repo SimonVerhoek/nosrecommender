@@ -166,8 +166,8 @@ def main():
     OR: import a list of urls from a
     local .json file.
     """
-    newsArchive = importJson(localArchive)
-    print newsArchive
+    newsArchive = import_file(localArchive)
+    newsArchive
     #print "Skipped."
 
     print
@@ -197,8 +197,52 @@ def main():
     # index articles
     Index.indexArticles(index)
 
+    process_browsing_history()
 
-def importJson(localFile):
+def process_browsing_history():
+    """
+    Starts a timer to check periodically for
+    a JSON file with urls visited by the user.
+    Restarts itself until a file is found.
+    If a file is found, it gets the content of 
+    the given urls.
+    """    
+    time.sleep(interval)
+
+    if check_if_file_exists(historyFileName) == True:
+        print
+        print "===== STEP 1: GETTING THE USER'S BROWSING HISTORY ====="
+        print
+        """   
+        Grab a local .json file from your computer,
+        containing the urls visited by the user.
+        """
+        test = import_file(historyFileName)
+        print test
+
+        # 
+
+
+
+    else:
+        print "Waiting for file with browsing history..."
+        
+    #if len(visitedUrlsList) >= NoArticlesToBeRead:
+    #    print
+    #    print "===== STEP 4: EXPORTING DATA ====="
+    #    print
+    #    """
+    #    If you want to export the articles,
+    #    you can choose to do so here.
+    #    """
+    #    #print "Nothing exported."
+    #    exportJson(recommendedArticles, outputFileName)
+    #    exportCsv(recommendedArticles, outputFileName)
+    #else:
+        processBrowsingHistory()
+
+
+def import_file(localFile):
     """
     Imports a JSON file from the given localFile
     and returns this.
@@ -209,6 +253,21 @@ def importJson(localFile):
 
     print "Imported content from " + localFile + "."
     return content
+
+
+def check_if_file_exists(fileName):
+    """
+    Checks if a certain file exists.
+    -   fileName should be a string containing
+        the name of a JSON file with therein
+        a list strings of urls.
+    """    
+    if os.path.isfile(fileName):
+        print
+        print 'File named "' + fileName + '" found.'
+        return True
+    else:
+        return False
 
 
 # execute main
