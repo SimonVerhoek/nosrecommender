@@ -3,8 +3,12 @@
 class Article(dict):
 	"""
 	Creates a dict for news articles.
-	It accepts a variable amount of key-value pairs
-	as key = "value".
+	A string containing a url is mandatory for 
+	instantiating an article. Supported attributes
+	are preset without a value, as shown in global
+	attribute 'defaults'. One can override these values
+	by adding extra input arguments as key = "value". 
+	The "value" then overrides the default value of 'None'.
 	"""
 	articleCount = 0
 
@@ -16,15 +20,6 @@ class Article(dict):
 	}
 
 	def __init__(self, url, **kwargs):
-		"""
-		Instantiates an article dict.
-		A string containing a url is mandatory for 
-		instantiating an article. Supported attributes
-		are preset without a value, as shown in global
-		attribute 'defaults'. One can override these values
-		by adding extra input arguments as key = "value". 
-		The "value" then overrides the default value of 'None'.
-		"""
 		self.__setitem__("url", url)
 		self.update(Article.defaults)
 
@@ -32,7 +27,6 @@ class Article(dict):
 		# replace default value
 		for key, value in kwargs.items():
 			self.update(kwargs)
-
 
 		Article.articleCount += 1
 
