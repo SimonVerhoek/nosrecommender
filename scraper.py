@@ -12,7 +12,7 @@ possibleCategories = ["Binnenland", "Buitenland", "Politiek", "Economie", "Cultu
 titleElement = {"tag": 	"h1", "class": "article__title"}
 categoriesElement = {"tag": "a", "class":"link-grey"}
 textElement = {"tag": "p"}
-images = {"tag": "img"}
+imageElement = {"tag": "img", "class":"media-full"}
 
 
 title = soup.find(titleElement["tag"], {titleElement.keys()[1]:titleElement.values()[1]}).text
@@ -26,6 +26,9 @@ body = ""
 for paragraph in soup.find_all(textElement["tag"]):
 	body += paragraph.text
 
+image = soup.find(imageElement["tag"], {imageElement.keys()[1]:imageElement.values()[1]}).get("src")
+
 #print title
 #print categories
-print body
+#print body
+print image
