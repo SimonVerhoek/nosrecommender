@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import re
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
@@ -16,16 +15,12 @@ paragraphs = {"tag": "p"}
 images = {"tag": "img"}
 
 
-#title = soup.find("h1", {"class":titleClass}).text
+title = soup.find(titleElement["tag"], {titleElement.keys()[1]:titleElement.values()[1]}).text
 
-#categories = []
-#for sibling in soup.find_all("span", {"class":"icon-tag ico-space-right link-grey"})[0].next_siblings:
-#	# filter out comma
-#	if "," not in sibling:
-#		categories.append(sibling.string)
 categories = []
+for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]:categoriesElement.values()[1]}):
+	if item.string in possibleCategories:
+		categories.append(item.string)
 
-for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]:categoriesElement.values()[1]}, href=re.compile("/nieuws/")):
-	print categories.append(item.string)
-
+print title
 print categories
