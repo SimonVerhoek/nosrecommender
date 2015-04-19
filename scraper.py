@@ -7,7 +7,12 @@ url = "http://nos.nl/artikel/2025837-rutte-athene-moet-ons-medicijn-slikken.html
 
 soup = BeautifulSoup(urlopen(url))
 
-possibleCategories = ["Binnenland", "Buitenland", "Politiek", "Economie", "Cultuur & Media", "Opmerkelijk"]
+possibleCategories = [	"Binnenland", 
+						"Buitenland", 
+						"Politiek", 
+						"Economie", 
+						"Cultuur & Media", 
+						"Opmerkelijk"]
 
 titleTag = {"type": "h1", "class": "article__title"}
 categoriesTag = {"type": "a", "class":"link-grey"}
