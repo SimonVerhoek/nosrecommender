@@ -9,30 +9,30 @@ soup = BeautifulSoup(urlopen(url))
 
 possibleCategories = ["Binnenland", "Buitenland", "Politiek", "Economie", "Cultuur & Media", "Opmerkelijk"]
 
-titleElement = {"tag": 	"h1", "class": "article__title"}
-categoriesElement = {"tag": "a", "class":"link-grey"}
-textElement = {"tag": "p"}
-imageElement = {"tag": "img", "class":"media-full"}
+titleTag = {"type": "h1", "class": "article__title"}
+categoriesTag = {"type": "a", "class":"link-grey"}
+textTag = {"type": "p"}
+imageTag = {"type": "img", "class":"media-full"}
 
 def scrape_contents(url):
 	soup = BeautifulSoup(urlopen(url))
 
 	# title
-	title = soup.find(titleElement["tag"], {titleElement.keys()[1]:titleElement.values()[1]}).text
+	title = soup.find(titleTag["type"], {titleTag.keys()[1]:titleTag.values()[1]}).text
 
 	# categories
 	categories = []
-	for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]:categoriesElement.values()[1]}):
+	for item in soup.find_all(categoriesTag["type"], {categoriesTag.keys()[1]:categoriesTag.values()[1]}):
 		if item.string in possibleCategories:
 			categories.append(item.string)
 
 	# body text
 	body = ""
-	for paragraph in soup.find_all(textElement["tag"]):
+	for paragraph in soup.find_all(textTag["type"]):
 		body += paragraph.text
 
 	# header image
-	image = soup.find(imageElement["tag"], {imageElement.keys()[1]:imageElement.values()[1]}).get("src")
+	image = soup.find(imageTag["type"], {imageTag.keys()[1]:imageTag.values()[1]}).get("src")
 
 	return title, categories, body, image
 
