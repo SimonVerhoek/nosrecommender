@@ -14,21 +14,26 @@ categoriesElement = {"tag": "a", "class":"link-grey"}
 textElement = {"tag": "p"}
 imageElement = {"tag": "img", "class":"media-full"}
 
+def scrape_contents(url):
+	soup = BeautifulSoup(urlopen(url))
 
-title = soup.find(titleElement["tag"], {titleElement.keys()[1]:titleElement.values()[1]}).text
+	# title
+	title = soup.find(titleElement["tag"], {titleElement.keys()[1]:titleElement.values()[1]}).text
 
-categories = []
-for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]:categoriesElement.values()[1]}):
-	if item.string in possibleCategories:
-		categories.append(item.string)
+	# categories
+	categories = []
+	for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]:categoriesElement.values()[1]}):
+		if item.string in possibleCategories:
+			categories.append(item.string)
 
-body = ""
-for paragraph in soup.find_all(textElement["tag"]):
-	body += paragraph.text
+	# body text
+	body = ""
+	for paragraph in soup.find_all(textElement["tag"]):
+		body += paragraph.text
 
-image = soup.find(imageElement["tag"], {imageElement.keys()[1]:imageElement.values()[1]}).get("src")
+	# header image
+	image = soup.find(imageElement["tag"], {imageElement.keys()[1]:imageElement.values()[1]}).get("src")
 
-#print title
-#print categories
-#print body
-print image
+	return title, categories, body, image
+
+print scrape_contents(url)
