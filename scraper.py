@@ -11,7 +11,7 @@ possibleCategories = ["Binnenland", "Buitenland", "Politiek", "Economie", "Cultu
 
 titleElement = {"tag": 	"h1", "class": "article__title"}
 categoriesElement = {"tag": "a", "class":"link-grey"}
-paragraphs = {"tag": "p"}
+textElement = {"tag": "p"}
 images = {"tag": "img"}
 
 
@@ -22,5 +22,10 @@ for item in soup.find_all(categoriesElement["tag"], {categoriesElement.keys()[1]
 	if item.string in possibleCategories:
 		categories.append(item.string)
 
-print title
-print categories
+body = ""
+for paragraph in soup.find_all(textElement["tag"]):
+	body += paragraph.text
+
+#print title
+#print categories
+print body
