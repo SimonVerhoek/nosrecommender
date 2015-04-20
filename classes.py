@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+from bs4 import BeautifulSoup
+from urllib2 import urlopen
+
+from scraper import *
+
 class Article(dict):
 	"""
 	Creates a dict for news articles.
@@ -9,6 +14,10 @@ class Article(dict):
 	attribute 'defaults'. One can override these values
 	by adding extra input arguments as key = "value". 
 	The "value" then overrides the default value of 'None'.
+
+	If an instance is found to lack information (one of the
+	values == None), this is automatically scraped from the
+	given url.
 	"""
 	articleCount = 0
 
@@ -29,6 +38,57 @@ class Article(dict):
 			self.update(kwargs)
 
 		Article.articleCount += 1
+
+
+		# if any tag still contains None,
+		# scrape its data
+		itemsToScrape = []
+		for key, value in self.items():
+			if value == None:
+				itemsToScrape.append(key)
+		
+		self.scrape(itemsToScrape)
+
+		print self
+
+	def scrape(self, *args):
+		soup = BeautifulSoup(urlopen(self["url"]))
+
+		# extract list from tuple
+		args = args[0]
+		print args
+
+		if "title" in args:
+			self.scrape_title(soup)
+		if "categories" in args:
+			self.scrape_categories(soup)
+		if "body" in args:
+			self.scrape_body(soup)
+		if "image" in args:
+			self.scrape_image(soup)		
+
+	def scrape_title(self, soup):
+		self["title"] = soup.find(titleTag["type"], {
+						titleTag.keys()[1]:titleTag.values()[1]
+					}).text
+
+	def scrape_categories(self, soup):
+		self["categories"] = []
+		for item in soup.find_all(categoriesTag["type"], {
+						categoriesTag.keys()[1]:categoriesTag.values()[1]
+					}):
+			if item.string in possibleCategories:
+				self["categories"].append(item.string)
+
+	def scrape_body(self, soup):
+		self["body"] = ""
+		for paragraph in soup.find_all(textTag["type"]):
+			self["body"] += paragraph.text
+
+	def scrape_image(self, soup):
+		self["image"] = soup.find(imageTag["type"], {
+						imageTag.keys()[1]:imageTag.values()[1]
+					}).get("src")
 
 	def display_articleCount(self):
 		print "Number of articles instantiated:", Article.articleCount
