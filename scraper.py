@@ -5,8 +5,6 @@ from urllib2 import urlopen
 
 url = "http://nos.nl/artikel/2025837-rutte-athene-moet-ons-medicijn-slikken.html"
 
-soup = BeautifulSoup(urlopen(url))
-
 possibleCategories = [	"Binnenland", 
 						"Buitenland", 
 						"Politiek", 
@@ -23,11 +21,15 @@ def scrape_contents(url):
 	soup = BeautifulSoup(urlopen(url))
 
 	# title
-	title = soup.find(titleTag["type"], {titleTag.keys()[1]:titleTag.values()[1]}).text
+	title = soup.find(titleTag["type"], {
+				titleTag.keys()[1]:titleTag.values()[1]
+			}).text
 
 	# categories
 	categories = []
-	for item in soup.find_all(categoriesTag["type"], {categoriesTag.keys()[1]:categoriesTag.values()[1]}):
+	for item in soup.find_all(categoriesTag["type"], {
+					categoriesTag.keys()[1]:categoriesTag.values()[1]
+				}):
 		if item.string in possibleCategories:
 			categories.append(item.string)
 
@@ -37,7 +39,9 @@ def scrape_contents(url):
 		body += paragraph.text
 
 	# header image
-	image = soup.find(imageTag["type"], {imageTag.keys()[1]:imageTag.values()[1]}).get("src")
+	image = soup.find(imageTag["type"], {
+				imageTag.keys()[1]:imageTag.values()[1]
+			}).get("src")
 
 	return title, categories, body, image
 
