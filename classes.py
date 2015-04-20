@@ -18,6 +18,12 @@ class Article(dict):
 	If an instance is found to lack information (one of the
 	values == None), this is automatically scraped from the
 	given url.
+
+	This class supports the following metadata:
+	- title (string)
+	- categories (list of one or more strings)
+	- body text (string)
+	- image (string)
 	"""
 	articleCount = 0
 
