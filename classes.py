@@ -39,24 +39,28 @@ class Article(dict):
 
 		Article.articleCount += 1
 
+		# check if no data is missing
+		self.check_completeness()
 
-		# if any tag still contains None,
-		# scrape its data
+
+	def check_completeness(self):
+		""" 
+		Checks if no data is missing.
+		If any tag is missing, its data is scraped from the
+		article website.
+		""" 
 		itemsToScrape = []
 		for key, value in self.items():
 			if value == None:
 				itemsToScrape.append(key)
-		
 		self.scrape(itemsToScrape)
-
-		print self
+		
 
 	def scrape(self, *args):
 		soup = BeautifulSoup(urlopen(self["url"]))
 
 		# extract list from tuple
 		args = args[0]
-		print args
 
 		if "title" in args:
 			self.scrape_title(soup)
