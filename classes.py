@@ -3,7 +3,8 @@
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
-from scraper import *
+# get article metadata inserted by user
+from article_metadata import *
 
 class Article(dict):
 	"""
