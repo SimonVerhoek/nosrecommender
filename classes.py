@@ -60,7 +60,8 @@ class Article(dict):
 		for key, value in self.items():
 			if value == None:
 				itemsToScrape.append(key)
-		self.scrape(itemsToScrape)
+		if len(itemsToScrape) > 0:
+			self.scrape(itemsToScrape)
 		
 
 	def scrape(self, *args):
@@ -82,6 +83,7 @@ class Article(dict):
 		self["title"] = soup.find(titleTag["type"], {
 						titleTag.keys()[1]:titleTag.values()[1]
 					}).text
+		print "Title scraped."
 
 	def scrape_categories(self, soup):
 		self["categories"] = []
@@ -90,16 +92,19 @@ class Article(dict):
 					}):
 			if item.string in possibleCategories:
 				self["categories"].append(item.string)
+		print "categories scraped."
 
 	def scrape_body(self, soup):
 		self["body"] = ""
 		for paragraph in soup.find_all(textTag["type"]):
 			self["body"] += paragraph.text
+		print "body text scraped."
 
 	def scrape_image(self, soup):
 		self["image"] = soup.find(imageTag["type"], {
 						imageTag.keys()[1]:imageTag.values()[1]
 					}).get("src")
+		print "Image scraped."
 
 	def display_articleCount(self):
 		print "Number of articles instantiated:", Article.articleCount
@@ -189,7 +194,7 @@ class Collection(dict):
 			pass
 
 	def display_collection(self):
-		print "index:", self
+		print "Collection:", self
 
 	def display_colName(self):
 		print "Name of collection:", self.colName
