@@ -134,7 +134,7 @@ class Collection(dict):
 
 	colName = ""
 
-	def __init__(self, key, value):
+	def __init__(self, key, value=[]):
 		"""
 		Instantiates a {key: value} archive dict.
 		"""
