@@ -115,27 +115,27 @@ from pyes import *
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
 
-class Archive(dict):
+class Collection(dict):
 	"""
 	Creates ElasticSearch-friendly news archive.
 	Product looks like this:
-	{archiveName: listofarticles}, where:
-	-	archiveName = a string with the name of the archive.
+	{colName: listofarticles}, where:
+	-	colName = a string with the name of the archive.
 		Is also the index name in ElasticSearch.
 	-	listofarticles = a list containing at least one
 		article dict (so like this: [{article1},...] )
 	"""
-	archiveCount = 0
+	colCount = 0
 
-	archiveName = ""
+	colName = ""
 
 	def __init__(self, key, value):
 		"""
 		Instantiates a {key: value} archive dict.
 		"""
-		self.archiveName = key
+		self.colName = key
 		self.__setitem__(key, value)
-		Archive.archiveCount += 1
+		Collection.colCount += 1
 
 	def add_article(self, article):
 		"""
@@ -143,7 +143,7 @@ class Archive(dict):
 		article list.
 		- article should be a dict of an article.
 		"""
-		self[self.archiveName].append(article)
+		self[self.colName].append(article)
 
 	def build_index(self, setting, mapping):
 		"""
@@ -156,14 +156,14 @@ class Archive(dict):
         	to be initialised.
 		"""
 		try:
-			connection.indices.delete_index(self.archiveName)
-			print 'Index with name "' + self.archiveName + '" already in Elasticsearch, removed it.'
+			connection.indices.delete_index(self.colName)
+			print 'Index with name "' + self.colName + '" already in Elasticsearch, removed it.'
 		except:
 			pass
 
-		connection.indices.create_index(self.archiveName, setting)
-		connection.indices.put_mapping("test_type", {'properties':mapping}, [self.archiveName])
-		print 'Index with name "' + self.archiveName + '" added to ElasticSearch.'
+		connection.indices.create_index(self.colName, setting)
+		connection.indices.put_mapping("test_type", {'properties':mapping}, [self.colName])
+		print 'Index with name "' + self.colName + '" added to ElasticSearch.'
 		print
 
 	def index_articles(self):
@@ -171,10 +171,10 @@ class Archive(dict):
 		Adds all articles of instance to
 		ElasticSearch index.
 		"""
-		for article in self[self.archiveName]:
-			connection.index(article, self.archiveName, "test-type")
+		for article in self[self.colName]:
+			connection.index(article, self.colName, "test-type")
 
-		print 'Articles added to "' + self.archiveName + '" in ElasticSearch.'
+		print 'Articles added to "' + self.colName + '" in ElasticSearch.'
 		print
 
 	def remove_index(self):
@@ -183,20 +183,20 @@ class Archive(dict):
 		from ElasticSearch.
 		"""
 		try:
-			connection.indices.delete_index(self.archiveName)
-			print "index", self.archiveName, "removed from ElasticSearch."
+			connection.indices.delete_index(self.colName)
+			print "index", self.colName, "removed from ElasticSearch."
 		except:
 			pass
 
-	def display_archive(self):
+	def display_collection(self):
 		print "index:", self
 
-	def display_archiveName(self):
-		print "archiveName:", self.archiveName
+	def display_colName(self):
+		print "Name of collection:", self.colName
 
-	def display_archiveCount(self):
-		print "Number of indices:", Archive.archiveCount
+	def display_colCount(self):
+		print "Number of collections:", Collection.colCount
 
 	def display_articleCount(self):
-		print "Number of articles:", len(self[self.archiveName])
+		print "Number of articles:", len(self[self.colName])
 
