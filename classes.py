@@ -3,8 +3,9 @@
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
-# get article metadata inserted by user
-from article_settings import *
+# import settings
+from article_settings import possibleCategories, titleTag, categoriesTag, textTag, imageTag
+from index_settings import setting, mapping
 
 class Article(dict):
 	"""
@@ -150,7 +151,7 @@ class Collection(dict):
 		"""
 		self[self.colName].append(article)
 
-	def build_index(self, setting, mapping):
+	def build_index(self):
 		"""
 		Builds index for news archive in ElasticSearch.
 		-   mapping should be a dictionary containing
