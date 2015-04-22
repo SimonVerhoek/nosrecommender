@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
 # get article metadata inserted by user
-from article_metadata import *
+from article_settings import *
 
 class Article(dict):
 	"""
