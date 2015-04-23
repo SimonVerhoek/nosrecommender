@@ -46,10 +46,9 @@ def main():
     if check_file_existence(archiveName) == True:
         # import json file
         fileContent = import_collection(archiveName)
-        name = fileContent.keys()[0]
 
         # create Collection instance
-        archive = Collection(name, fileContent.values()[0])
+        archive = Collection(fileContent.keys()[0], fileContent.values()[0])
     else:
         # scrape website for urls
         urls = scrape_urls(noDays, date)
