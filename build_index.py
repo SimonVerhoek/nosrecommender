@@ -3,8 +3,16 @@
 import os.path
 import json
 from datetime import datetime, date, timedelta
-
+from urllib2 import urlopen
+import cookielib, urllib2
+from cookielib import CookieJar
+import re
 from classes import Article, Collection
+
+# needed for scraper to open link
+cj = CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # name of exported news archive
 archiveName = "archive.json"
@@ -44,11 +52,12 @@ def main():
         archive = Collection(name, fileContent.values()[0])
     else:
         # scrape website for urls
+        urls = scrape_urls(noDays, date)
         # create Collection instance
         # for every found url 
             # create Article instance
             # add article to collection
-        print "not found"
+        print urls
 
 
     #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
@@ -86,7 +95,7 @@ def import_collection(localFile):
     return content  
 
 
-def scrapeUrls(noDays, date):
+def scrape_urls(noDays, date):
     """ 
     Scrapes the NOS "archief" page for article urls
     for a set amount of days. Returns a list named 
