@@ -3,17 +3,12 @@
 import os.path
 import json
 from datetime import datetime, date, timedelta
-from urllib2 import urlopen
-import cookielib, urllib2
-from cookielib import CookieJar
-import re
-from classes import Article, Collection
 from sys import exit
+from bs4 import BeautifulSoup
+from urllib2 import urlopen
 
-# needed for scraper to open link
-cj = CookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+from classes import Article, Collection
+
 
 # name of exported news archive
 fileName = "archive.json"
@@ -120,12 +115,12 @@ def scrape_urls(noDays, date):
         page = "http://nos.nl/nieuws/archief/" + year + "-" + month + "-" + day
 
         # get all links from this day's webpage
-        archief = opener.open(page).read()
-        links = re.findall(r'<li class="list-time__item"><a href="(.*?)" class="link-block">', archief)
-
-        for link in links:
-            link = "http://nos.nl" + link
-            urls.append(link)
+        soup = BeautifulSoup(urlopen(page))
+        for link in soup.find_all("a", {"class":"link-block"}):
+            # filter out non-article links
+            if link["href"][1:8] == "artikel":
+                link = "http://nos.nl" + link["href"]
+                urls.append(link)
 
         # go one day back in time
         date = date - timedelta(days=1)
