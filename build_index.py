@@ -94,6 +94,8 @@ def build_new_archive(archiveName, noDays):
         article = Article(url)
         archive.add_article(article)
 
+    Collection.display_articleCount(archive)
+
 def scrape_urls(noDays, date):
     """ 
     Scrapes the NOS "archief" page for article urls
