@@ -15,11 +15,15 @@ opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
 # name of exported news archive
-archiveName = "archive.json"
+fileName = "archive.json"
 
 # if you want to create an index from a
 # local file, give correct filepath here
-localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + archiveName
+localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + fileName
+
+# If you want to create an index without a
+# local file, set the name for the index here:
+archiveName = "NOS archive"
 
 # set number of days back in time to
 # be scraped. If set to 1, only today's
@@ -31,14 +35,14 @@ def main():
     print
     print "===== STEP 1: BUILDING A NEWS ARCHIVE ====="
     print
-    if check_file_existence(archiveName) == True:
+    if check_file_existence(fileName) == True:
         """ 
         OPTION 1: import a list of urls from a
         local .json file.
         filecontent[0] = collection name
         filecontent[1] = list of articles in file.
         """
-        fileContent = import_collection(archiveName)
+        fileContent = import_collection(fileName)
         archive = Collection(fileContent[0], fileContent[1]) 
     else:
         """ 
@@ -54,13 +58,12 @@ def main():
         urls = scrape_urls(noDays, date)
         noArticles = len(urls)
 
-        archive = Collection("test")
+        archive = Collection(archiveName)
 
         for articleNo, url in enumerate(urls):
             print "Processing article %d of %d..." % (articleNo+1, noArticles)
             article = Article(url)
             archive.add_article(article)
-            articleNo += 1
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
