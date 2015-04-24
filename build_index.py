@@ -44,11 +44,12 @@ def main():
         """ 
         OPTION 2: scrape the news archive.
         The procedure is as follows: 
-        1:  The urls are scraped for a set number of days. 
-        2:  For each url, an Article is instantiated. The 
-            article's contents are scraped automatically by
-            the Article class.
-        3:  Each 
+        1:  Scrape urls for a set number of days. 
+        2:  Instantiate Collection.
+        3:  For each url, instantiate Article. The article's
+            contents are scraped automatically by the Article 
+            class.
+        4:  Add article to collection instance.
         """
         urls = scrape_urls(noDays, date)
         noArticles = len(urls)
