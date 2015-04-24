@@ -8,6 +8,7 @@ import cookielib, urllib2
 from cookielib import CookieJar
 import re
 from classes import Article, Collection
+from sys import exit
 
 # needed for scraper to open link
 cj = CookieJar()
@@ -35,23 +36,22 @@ def main():
     print
     print "===== STEP 1: BUILDING A NEWS ARCHIVE ====="
     print
-    if check_file_existence(fileName) == True:
-        """ 
-        OPTION 1: import an existing archive
-        """
-        get_existing_archive(fileName)
-    else:
-        """ 
-        OPTION 2: scrape the news archive.
-        The procedure is as follows: 
-        1:  Scrape urls for a set number of days. 
-        2:  Instantiate Collection.
-        3:  For each url, instantiate Article. The article's
-            contents are scraped automatically by the Article 
-            class.
-        4:  Add article to collection instance.
-        """
-        build_new_archive(archiveName, noDays)
+    """ 
+    OPTION 1: import an existing archive
+    """
+    get_existing_archive(fileName)
+        
+    """ 
+    OPTION 2: scrape the news archive.
+    The procedure is as follows: 
+    1:  Scrape urls for a set number of days. 
+    2:  Instantiate Collection.
+    3:  For each url, instantiate Article. The article's
+        contents are scraped automatically by the Article 
+        class.
+    4:  Add article to collection instance.
+    """
+    #build_new_archive(archiveName, noDays)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -63,22 +63,13 @@ def get_existing_archive(fileName):
     filecontent[0] = collection name
     filecontent[1] = list of articles in file.
     """
-    fileContent = import_collection(fileName)
-    archive = Collection(fileContent[0], fileContent[1])
-
-def check_file_existence(fileName):
-    """
-    Checks if a certain file exists.
-    -   fileName should be a string containing
-        the name of a JSON file with therein
-        a list strings of urls.
-    """    
+    print 'Attempting to import from local file "' + fileName + '"...'
     if os.path.isfile(fileName):
-        print
-        print 'File named "' + fileName + '" found.'
-        return True
+        fileContent = import_collection(fileName)
+        archive = Collection(fileContent[0], fileContent[1])
     else:
-        return False
+        print "File not found."
+        exit()
 
 
 def import_collection(localFile):
