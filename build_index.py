@@ -51,15 +51,7 @@ def main():
             class.
         4:  Add article to collection instance.
         """
-        urls = scrape_urls(noDays, date)
-        noArticles = len(urls)
-
-        archive = Collection(archiveName)
-
-        for articleNo, url in enumerate(urls):
-            print "Processing article %d of %d..." % (articleNo+1, noArticles)
-            article = Article(url)
-            archive.add_article(article)
+        build_new_archive(archiveName, noDays)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
@@ -72,7 +64,7 @@ def get_existing_archive(fileName):
     filecontent[1] = list of articles in file.
     """
     fileContent = import_collection(fileName)
-    archive = Collection(fileContent[0], fileContent[1]) 
+    archive = Collection(fileContent[0], fileContent[1])
 
 def check_file_existence(fileName):
     """
@@ -103,6 +95,17 @@ def import_collection(localFile):
         print "Imported: %s, %d articles" % (k, len(v))
         return k, v
 
+
+def build_new_archive(archiveName, noDays):
+    urls = scrape_urls(noDays, date)
+    noArticles = len(urls)
+
+    archive = Collection(archiveName)
+
+    for articleNo, url in enumerate(urls):
+        print "Processing article %d of %d..." % (articleNo+1, noArticles)
+        article = Article(url)
+        archive.add_article(article)
 
 def scrape_urls(noDays, date):
     """ 
