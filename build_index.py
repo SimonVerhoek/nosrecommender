@@ -37,17 +37,15 @@ def main():
     print "===== STEP 1: BUILDING A NEWS ARCHIVE ====="
     print
     """ 
-    OPTION 1: import an existing archive.
+    OPTION 1: Import an existing archive.
     """
     get_existing_archive(fileName)
         
     """ 
-    OPTION 2: scrape the news archive.
+    OPTION 2: Build a new archive.
     """
     #build_new_archive(archiveName, noDays)
 
-    # directly export it for later use
-    #exportJson(newsArchive, archiveName)
 
 def get_existing_archive(fileName):
     """
