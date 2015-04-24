@@ -36,13 +36,19 @@ def main():
     """ 
     OPTION 1: Import an existing archive.
     """
-    get_existing_archive(fileName)
+    #archive = get_existing_archive(fileName)
         
     """ 
     OPTION 2: Build a new archive.
     """
-    #build_new_archive(archiveName, noDays)
+    archive = build_new_archive(archiveName, noDays)
 
+    print
+    print "===== STEP 2: INDEXING THE NEWS ARCHIVE ====="
+    print
+    
+    Collection.build_index(archive)
+    Collection.index_articles(archive)
 
 def get_existing_archive(fileName):
     """
@@ -55,6 +61,7 @@ def get_existing_archive(fileName):
     if os.path.isfile(fileName):
         fileContent = import_collection(fileName)
         archive = Collection(fileContent[0], fileContent[1])
+        return archive
     else:
         print "File not found."
         exit()
@@ -97,6 +104,7 @@ def build_new_archive(archiveName, noDays):
         archive.add_article(article)
 
     Collection.display_articleCount(archive)
+    return archive
 
 def scrape_urls(noDays, date):
     """ 
