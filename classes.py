@@ -68,56 +68,63 @@ class Article(dict):
 	def scrape(self, *args):
 		soup = BeautifulSoup(urlopen(self["url"]))
 
+		scraped = []
+
 		# extract list from tuple
 		args = args[0]
 
 		if "title" in args:
-			self.scrape_title(soup)
+			try:
+				self.scrape_title(soup)
+				scraped.append("title")
+			except:
+				print "Scraping title failed."
 		if "categories" in args:
-			self.scrape_categories(soup)
+			try:
+				self.scrape_categories(soup)
+				scraped.append("categories")
+			except:
+				print "Scraping categories failed."
 		if "body" in args:
-			self.scrape_body(soup)
+			try:
+				self.scrape_body(soup)
+				scraped.append("body text")
+			except:
+				print "Scraping body text failed."
 		if "image" in args:
-			self.scrape_image(soup)		
+			try:
+				self.scrape_image(soup)	
+				scraped.append("image")
+			except:
+				print "Scraping image failed."	
+
+		print "Scraped:", ", ".join(scraped)
 
 	def scrape_title(self, soup):
-		try:
-			self["title"] = soup.find(titleTag["type"], {
-						titleTag.keys()[1]:titleTag.values()[1]
-					}).text
-		except:
-			self["title"] = "none"
-		print "Title scraped."
+		self["title"] = soup.find(titleTag["type"], {
+					titleTag.keys()[1]:titleTag.values()[1]
+				}).text
 
 	def scrape_categories(self, soup):
 		self["categories"] = []
-		try:
-			for item in soup.find_all(categoriesTag["type"], {
-						categoriesTag.keys()[1]:categoriesTag.values()[1]
-					}):
-				if item.string in possibleCategories:
-					self["categories"].append(item.string)
-		except:
-			self["categories"] = "none"
-		print "categories scraped."
+		for item in soup.find_all(categoriesTag["type"], {
+					categoriesTag.keys()[1]:categoriesTag.values()[1]
+				}):
+			if item.string in possibleCategories:
+				self["categories"].append(item.string)
 
 	def scrape_body(self, soup):
 		self["body"] = ""
-		try:
-			for paragraph in soup.find_all(textTag["type"]):
-				self["body"] += paragraph.text
-		except:
-			self["image"] = "none"
-		print "body text scraped."
-
+		for paragraph in soup.find_all(textTag["type"]):
+			self["body"] += paragraph.text
+			
 	def scrape_image(self, soup):
-		try:
-			self["image"] = soup.find(imageTag["type"], {
-						imageTag.keys()[1]:imageTag.values()[1]
-					}).get("src")
-		except:
-			self["image"] = "none"
-		print "Image scraped."
+		self["image"] = soup.find(imageTag["type"], {
+			imageTag.keys()[1]:imageTag.values()[1]
+		}).get("src")
+
+			
+		
 
 	def display_articleCount(self):
 		print "Number of articles instantiated:", Article.articleCount
