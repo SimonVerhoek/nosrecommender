@@ -47,16 +47,29 @@ def main():
         # import json file
         fileContent = import_collection(archiveName)
 
-        # create Collection instance
-        archive = Collection(fileContent.keys()[0], fileContent.values()[0])
+        # create Collection instance. 
+        # filecontent[0] = collection name
+        # filecontent[1] = list of articles
+        archive = Collection(fileContent[0], fileContent[1])  
     else:
-        # scrape website for urls
         urls = scrape_urls(noDays, date)
         # create Collection instance
         # for every found url 
             # create Article instance
             # add article to collection
-        print urls
+        archive = Collection("test")
+
+        noArticles = len(urls)
+        articleNo = 0
+
+        for url in urls:
+            print "article %d of %d" % (articleNo, noArticles)
+            print url
+            article = Article(url)
+            archive.add_article(article)
+            articleNo += 1
+        print archive
+        
 
 
     #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
@@ -90,8 +103,9 @@ def import_collection(localFile):
     """
     content = json.loads(open(localFile, "rb").read())
 
-    print "Imported content from " + localFile + "."
-    return content  
+    for k, v in content.iteritems():
+        print "Imported: %s, %d articles" % (k, len(v))
+        return k, v
 
 
 def scrape_urls(noDays, date):
