@@ -37,19 +37,12 @@ def main():
     print "===== STEP 1: BUILDING A NEWS ARCHIVE ====="
     print
     """ 
-    OPTION 1: import an existing archive
+    OPTION 1: import an existing archive.
     """
     get_existing_archive(fileName)
         
     """ 
     OPTION 2: scrape the news archive.
-    The procedure is as follows: 
-    1:  Scrape urls for a set number of days. 
-    2:  Instantiate Collection.
-    3:  For each url, instantiate Article. The article's
-        contents are scraped automatically by the Article 
-        class.
-    4:  Add article to collection instance.
     """
     #build_new_archive(archiveName, noDays)
 
@@ -58,8 +51,8 @@ def main():
 
 def get_existing_archive(fileName):
     """
-    Imports an existing archive from a
-    .json file.
+    Imports an existing archive from a .json file.
+    Exits when file is not found.
     filecontent[0] = collection name
     filecontent[1] = list of articles in file.
     """
@@ -88,6 +81,16 @@ def import_collection(localFile):
 
 
 def build_new_archive(archiveName, noDays):
+    """
+    Builds new archive by scraping the given news website.
+    The procedure is as follows: 
+    1:  Scrape urls for a set number of days. 
+    2:  Instantiate Collection.
+    3:  For each url, instantiate Article. The article's
+        contents are scraped automatically by the Article 
+        class.
+    4:  Add article to collection instance.
+    """
     urls = scrape_urls(noDays, date)
     noArticles = len(urls)
 
@@ -107,7 +110,6 @@ def scrape_urls(noDays, date):
     -   date should be datetime.today().
     """
     date = datetime.today()
-
     urls = []
 
     for i in xrange(0, noDays):
@@ -132,6 +134,7 @@ def scrape_urls(noDays, date):
 
     print str(len(urls)) + " urls scraped from past " + str(noDays) + " days."
     return urls
+
 
 # execute main
 if __name__ == "__main__":
