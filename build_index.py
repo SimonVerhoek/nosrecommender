@@ -19,7 +19,9 @@ localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosr
 
 # If you want to create an index without a
 # local file, set the name for the index here:
-archiveName = "NOS archive"
+# WARNING:  name should be lowercase and without
+#           spaces!
+archiveName = "nosarchive"
 
 # set number of days back in time to
 # be scraped. If set to 1, only today's
