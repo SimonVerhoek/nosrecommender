@@ -223,5 +223,5 @@ class Collection(dict):
 		print "Number of collections:", Collection.colCount
 
 	def display_articleCount(self):
-		print "Number of articles:", len(self[self.colName])
+		print "Number of articles in %s: %d" %(self.colName, len(self[self.colName])) 
 
