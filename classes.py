@@ -81,30 +81,42 @@ class Article(dict):
 			self.scrape_image(soup)		
 
 	def scrape_title(self, soup):
-		self["title"] = soup.find(titleTag["type"], {
+		try:
+			self["title"] = soup.find(titleTag["type"], {
 						titleTag.keys()[1]:titleTag.values()[1]
 					}).text
+		except:
+			self["title"] = "none"
 		print "Title scraped."
 
 	def scrape_categories(self, soup):
 		self["categories"] = []
-		for item in soup.find_all(categoriesTag["type"], {
+		try:
+			for item in soup.find_all(categoriesTag["type"], {
 						categoriesTag.keys()[1]:categoriesTag.values()[1]
 					}):
-			if item.string in possibleCategories:
-				self["categories"].append(item.string)
+				if item.string in possibleCategories:
+					self["categories"].append(item.string)
+		except:
+			self["categories"] = "none"
 		print "categories scraped."
 
 	def scrape_body(self, soup):
 		self["body"] = ""
-		for paragraph in soup.find_all(textTag["type"]):
-			self["body"] += paragraph.text
+		try:
+			for paragraph in soup.find_all(textTag["type"]):
+				self["body"] += paragraph.text
+		except:
+			self["image"] = "none"
 		print "body text scraped."
 
 	def scrape_image(self, soup):
-		self["image"] = soup.find(imageTag["type"], {
+		try:
+			self["image"] = soup.find(imageTag["type"], {
 						imageTag.keys()[1]:imageTag.values()[1]
 					}).get("src")
+		except:
+			self["image"] = "none"
 		print "Image scraped."
 
 	def display_articleCount(self):
