@@ -29,50 +29,37 @@ noDays = 1
 
 def main():
     print
-    print "===== STEP 1: GETTING A NEWS ARCHIVE ====="
+    print "===== STEP 1: BUILDING A NEWS ARCHIVE ====="
     print
-    """
-    Get a list of urls to NOS news articles
-    to build an archive.
-    """
-    """ 
-    OPTION 1: import a list of urls from a
-    local .json file.
-    """
-
-    """ 
-    OPTION 2: scrape the NOS news archive 
-    """
     if check_file_existence(archiveName) == True:
-        # import json file
+        """ 
+        OPTION 1: import a list of urls from a
+        local .json file.
+        filecontent[0] = collection name
+        filecontent[1] = list of articles in file.
+        """
         fileContent = import_collection(archiveName)
-
-        # create Collection instance. 
-        # filecontent[0] = collection name
-        # filecontent[1] = list of articles
-        archive = Collection(fileContent[0], fileContent[1])  
+        archive = Collection(fileContent[0], fileContent[1]) 
     else:
+        """ 
+        OPTION 2: scrape the news archive.
+        The procedure is as follows: 
+        1:  The urls are scraped for a set number of days. 
+        2:  For each url, an Article is instantiated. The 
+            article's contents are scraped automatically by
+            the Article class.
+        3:  Each 
+        """
         urls = scrape_urls(noDays, date)
-        # create Collection instance
-        # for every found url 
-            # create Article instance
-            # add article to collection
+        noArticles = len(urls)
+
         archive = Collection("test")
 
-        noArticles = len(urls)
-        articleNo = 0
-
-        for url in urls:
-            print "article %d of %d" % (articleNo, noArticles)
-            print url
+        for articleNo, url in enumerate(urls):
+            print "Processing article %d of %d..." % (articleNo+1, noArticles)
             article = Article(url)
             archive.add_article(article)
             articleNo += 1
-        print archive
-        
-
-
-    #newsArchive = getData(scrapeUrls(noDays, date), articleListName)
 
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
