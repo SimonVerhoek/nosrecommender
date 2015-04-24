@@ -37,13 +37,9 @@ def main():
     print
     if check_file_existence(fileName) == True:
         """ 
-        OPTION 1: import a list of urls from a
-        local .json file.
-        filecontent[0] = collection name
-        filecontent[1] = list of articles in file.
+        OPTION 1: import an existing archive
         """
-        fileContent = import_collection(fileName)
-        archive = Collection(fileContent[0], fileContent[1]) 
+        get_existing_archive(fileName)
     else:
         """ 
         OPTION 2: scrape the news archive.
@@ -68,6 +64,15 @@ def main():
     # directly export it for later use
     #exportJson(newsArchive, archiveName)
 
+def get_existing_archive(fileName):
+    """
+    Imports an existing archive from a
+    .json file.
+    filecontent[0] = collection name
+    filecontent[1] = list of articles in file.
+    """
+    fileContent = import_collection(fileName)
+    archive = Collection(fileContent[0], fileContent[1]) 
 
 def check_file_existence(fileName):
     """
