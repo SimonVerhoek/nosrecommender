@@ -4,7 +4,6 @@ from datetime import datetime, date, timedelta
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 import json
-import csv
 
 from classes import Article, Collection
 
