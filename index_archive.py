@@ -4,16 +4,10 @@ import json
 from sys import exit
 from os import path, chdir
 
+from settings.general_settings import archiveName
 from classes import Article, Collection
 
 dir = path.dirname(__file__)
-
-# name of exported news archive
-fileName = "archive.json"
-
-# if you want to create an index from a
-# local file, give correct filepath here
-localArchive =  "/Users/simonverhoek/Google Drive/Studie/Web search/Project/nosrecommender/" + fileName
 
 
 def main():
@@ -22,7 +16,7 @@ def main():
     """
 
     # import an existing archive.
-    archive = import_archive(fileName)
+    archive = import_archive(archiveName)
 
     # build ElasticSearch index of archive
     Collection.build_index(archive)
@@ -36,11 +30,13 @@ def import_archive(fileName):
         with an ElasticSearch-friendly format, in the 
         "/files" subfolder. 
     """
+    fileName = archiveName + ".json"
+
     print 'Attempting to import from "files/' + fileName + '"...'
 
     chdir("files")
 
-    if  path.isfile(fileName):
+    if path.isfile(fileName):
         content = json.loads(open(fileName, "rb").read())
 
         for k, v in content.iteritems():

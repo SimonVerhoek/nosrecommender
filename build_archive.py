@@ -6,15 +6,10 @@ from urllib2 import urlopen
 import json
 from os import path, chdir
 
+from settings.general_settings import archiveName
 from classes import Article, Collection
 
 dir = path.dirname(__file__)
-
-# If you want to create an index without a
-# local file, set the name for the index here:
-# WARNING:  name should be lowercase and without
-#           spaces!
-archiveName = "nosarchive"
 
 # set number of days back in time to
 # be scraped. If set to 1, only today's
