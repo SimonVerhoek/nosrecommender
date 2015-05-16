@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-import os.path
-import os
 import json
 from sys import exit
+from os import path, chdir
 
 from classes import Article, Collection
 
-dir = os.path.dirname(__file__)
+dir = path.dirname(__file__)
 
 # name of exported news archive
 fileName = "archive.json"
@@ -39,9 +38,9 @@ def import_archive(fileName):
     """
     print 'Attempting to import from "files/' + fileName + '"...'
 
-    os.chdir("files")
+    chdir("files")
 
-    if os.path.isfile(fileName):
+    if  path.isfile(fileName):
         content = json.loads(open(fileName, "rb").read())
 
         for k, v in content.iteritems():
