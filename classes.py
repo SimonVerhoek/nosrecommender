@@ -4,7 +4,13 @@ from bs4 import BeautifulSoup
 from urllib2 import urlopen
 
 # import settings
-from settings.article_settings import possibleCategories, titleTag, categoriesTag, textTag, imageTag
+from settings.article_settings import (
+	possibleCategories, 
+	titleTag, 
+	categoriesTag, 
+	textTag, 
+	imageTag
+)
 from settings.index_settings import setting, mapping
 
 class Article(dict):
