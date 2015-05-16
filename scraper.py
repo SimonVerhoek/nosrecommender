@@ -4,11 +4,11 @@ from datetime import datetime, date, timedelta
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 import json
-import os
+from os import path, chdir
 
 from classes import Article, Collection
 
-dir = os.path.dirname(__file__)
+dir = path.dirname(__file__)
 
 # If you want to create an index without a
 # local file, set the name for the index here:
@@ -102,7 +102,7 @@ def export_json(archive):
     fileName = archive.keys()[0]
 
     # go to "files" subfolder
-    os.chdir("files")
+    chdir("files")
 
     outFile = open(fileName + ".json", "w+")
     json.dump(archive, outFile, indent = 4)
