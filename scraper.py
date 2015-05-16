@@ -4,8 +4,11 @@ from datetime import datetime, date, timedelta
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 import json
+import os
 
 from classes import Article, Collection
+
+dir = os.path.dirname(__file__)
 
 # If you want to create an index without a
 # local file, set the name for the index here:
@@ -19,7 +22,7 @@ archiveName = "nosarchive"
 noDays = 1
 
 def main():
-	""" 
+	"""
     Scrape the NOS archive for articles
     """
 	archive = build_new_archive(archiveName, noDays)
@@ -98,11 +101,14 @@ def export_json(archive):
     """
     fileName = archive.keys()[0]
 
+    # go to "files" subfolder
+    os.chdir("files")
+
     outFile = open(fileName + ".json", "w+")
     json.dump(archive, outFile, indent = 4)
     outFile.close()
 
-    print "Exported articles to " + fileName + ".json."
+    print "Exported articles to files/" + fileName + ".json."
     print
 
 
