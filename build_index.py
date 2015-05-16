@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import os.path
+import os
 import json
 from sys import exit
 
 from classes import Article, Collection
 
+dir = os.path.dirname(__file__)
 
 # name of exported news archive
 fileName = "archive.json"
@@ -30,36 +32,27 @@ def main():
 
 def import_archive(fileName):
     """
-    Imports an existing archive from a .json file.
-    Exits when file is not found.
-    filecontent[0] = collection name
-    filecontent[1] = list of articles in file.
+    Imports an existing news archive.
+    -   fileName should be the name of a local JSON file, 
+        with an ElasticSearch-friendly format, in the 
+        "/files" subfolder. 
     """
-    print 'Attempting to import from local file "' + fileName + '"...'
+    print 'Attempting to import from "files/' + fileName + '"...'
+
+    os.chdir("files")
+
     if os.path.isfile(fileName):
-        fileContent = import_collection(fileName)
-        archive = Collection(fileContent[0], fileContent[1])
+        content = json.loads(open(fileName, "rb").read())
+
+        for k, v in content.iteritems():
+            print "Imported: %s, %d articles" % (k, len(v))
+            print
+
+        archive = Collection(content.keys()[0], content.values()[0])
         return archive
     else:
         print "File not found."
         exit()
-
-
-def import_collection(localFile):
-    """
-    Imports a JSON file from the given localFile filepath.
-    The content should be a dict in the ElasticSearch-friendly
-    format.
-    -   localFile should be a string containing the
-        path to a certain local .json file.
-    """
-    content = json.loads(open(localFile, "rb").read())
-
-    for k, v in content.iteritems():
-        print "Imported: %s, %d articles" % (k, len(v))
-        print
-        return k, v
-
 
 # execute main
 if __name__ == "__main__":
