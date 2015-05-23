@@ -116,12 +116,15 @@ class Article(dict):
 				}).text
 
 	def scrape_categories(self, soup):
-		self["categories"] = []
-		for item in soup.find_all(categoriesTag["type"], {
+		self["categories"] = ""
+		for count, item in enumerate(soup.find_all(categoriesTag["type"], {
 					categoriesTag.keys()[1]:categoriesTag.values()[1]
-				}):
+				})):
 			if item.string in possibleCategories:
-				self["categories"].append(item.string)
+				if count > 0:
+					# only add comma from second category on
+					self["categories"] += "," 
+				self["categories"] += item.string
 
 	def scrape_body(self, soup):
 		self["body"] = ""
