@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+# needed by all classes
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
+
+# needed by Collection class only
+from pyes import *
 
 # import settings
 from settings.article_settings import (
@@ -129,8 +133,6 @@ class Article(dict):
 			imageTag.keys()[1]:imageTag.values()[1]
 		}).get("src")
 
-			
-		
 
 	def display_articleCount(self):
 		print "Number of articles instantiated:", Article.articleCount
@@ -138,13 +140,8 @@ class Article(dict):
 	def display_article(self):
 		for key, value in self.items():
 			print key, "=", value
-		
 
 
-from pyes import *
-
-# create a connection with ElasticSearch
-connection = ES('localhost:9200')
 
 class Collection(dict):
 	"""
@@ -186,6 +183,9 @@ class Collection(dict):
         	the settings for the ElasticSearch index
         	to be initialised.
 		"""
+		# create a connection with ElasticSearch
+		connection = ES('localhost:9200')
+
 		try:
 			connection.indices.delete_index(self.colName)
 			print 'Index with name "' + self.colName + '" already in Elasticsearch, removed it.'
@@ -202,6 +202,9 @@ class Collection(dict):
 		Adds all articles of instance to
 		ElasticSearch index.
 		"""
+		# create a connection with ElasticSearch
+		connection = ES('localhost:9200')
+
 		for article in self[self.colName]:
 			connection.index(article, self.colName, "test-type")
 
@@ -213,6 +216,9 @@ class Collection(dict):
 		Removes the index of this news archive instance
 		from ElasticSearch.
 		"""
+		# create a connection with ElasticSearch
+		connection = ES('localhost:9200')
+		
 		try:
 			connection.indices.delete_index(self.colName)
 			print "index", self.colName, "removed from ElasticSearch."
