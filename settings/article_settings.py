@@ -9,7 +9,8 @@ possibleCategories = [	"Binnenland",
 						"Politiek", 
 						"Economie", 
 						"Cultuur & Media", 
-						"Opmerkelijk"]
+						"Opmerkelijk",
+						"Koningshuis"]
 
 """
 The article metadata tags, as where
