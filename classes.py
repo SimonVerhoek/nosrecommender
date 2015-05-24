@@ -7,6 +7,10 @@ from urllib2 import urlopen
 # needed by Collection class only
 from pyes import *
 
+import json
+from os import path, chdir
+dir = path.dirname(__file__)
+
 # import settings
 from settings.article_settings import (
 	possibleCategories, 
@@ -16,6 +20,7 @@ from settings.article_settings import (
 	imageTag
 )
 from settings.index_settings import setting, mapping
+
 
 class Article(dict):
 	"""
@@ -227,6 +232,31 @@ class Collection(dict):
 			print "index", self.colName, "removed from ElasticSearch."
 		except:
 			pass
+
+
+	def import_from_json(self, fileName):
+		"""
+		Imports a collection from a JSON file.
+		If no file is found, program is exited.
+		- 	fileName should be a string with the name of 
+			a JSON file, WITHOUT the ".json" extension.
+		"""
+		print 'Attempting to import from "files/' + fileName + '"...'
+		
+		fileName += ".json"
+		chdir("files")
+
+		if path.isfile(fileName):
+			content = json.loads(open(fileName, "rb").read())
+
+			# assign content to Collection instance
+			self.colName = content.keys()[0]
+			for article in content.values()[0]:
+				self.add_article(article)
+		else:
+			print "File not found."
+			exit()
+		    
 
 	def display_collection(self):
 		print "Collection:", self
