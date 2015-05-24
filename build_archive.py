@@ -23,9 +23,9 @@ def main():
 	archive = build_new_archive(archiveName, noDays)
 
 	""" 
-    Export the built archive to a JSON file.
-    """
-	export_json(archive)
+	Export the built archive to a JSON file.
+	"""
+	archive.export_to_json()
 
 
 def build_new_archive(archiveName, noDays):
@@ -86,25 +86,6 @@ def scrape_urls(noDays, date):
 
     print str(len(urls)) + " urls scraped from past " + str(noDays) + " days."
     return urls
-
-
-def export_json(archive):
-    """ 
-    Exports the inserted object to a .json file.
-    -   articles should be a dictionary.
-    -   outputFileName should be a string.
-    """
-    fileName = archive.keys()[0]
-
-    # go to "files" subfolder
-    chdir("files")
-
-    outFile = open(fileName + ".json", "w+")
-    json.dump(archive, outFile, indent = 4)
-    outFile.close()
-
-    print "Exported articles to files/" + fileName + ".json."
-    print
 
 
 # execute main
