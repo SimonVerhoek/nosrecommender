@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 
-import json
-from sys import exit
-from os import path, chdir
-
 from settings.general_settings import archiveName
 from classes import Article, Collection
-
-dir = path.dirname(__file__)
 
 
 def main():
