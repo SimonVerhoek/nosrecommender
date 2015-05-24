@@ -249,6 +249,10 @@ class Collection(dict):
 		if path.isfile(fileName):
 			content = json.loads(open(fileName, "rb").read())
 
+			for k, v in content.iteritems():
+				print "Imported: %s, %d articles" % (k, len(v))
+				print
+
 			# assign content to Collection instance
 			self.colName = content.keys()[0]
 			for article in content.values()[0]:
