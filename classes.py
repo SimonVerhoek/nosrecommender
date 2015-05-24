@@ -8,7 +8,7 @@ from urllib2 import urlopen
 from pyes import *
 
 import json
-from os import path, chdir
+from os import path, chdir, getcwd, pardir
 dir = path.dirname(__file__)
 
 # import settings
@@ -257,10 +257,28 @@ class Collection(dict):
 			self.colName = content.keys()[0]
 			for article in content.values()[0]:
 				self.add_article(article)
+
+			chdir(pardir)
 		else:
 			print "File not found."
 			exit()
-		    
+
+	def export_to_json(self):
+		"""
+		Exports collection to a JSON file.
+		The name of the collection will be given as a filename.
+		The file is stored in the "files" subdirectory.
+		"""
+		chdir("files")
+
+		outFile = open(self.colName + ".json", "w+")
+		json.dump(self, outFile, indent = 4)
+		outFile.close()
+
+		chdir(pardir)
+
+		print "Exported collection to files/%s.json." % self.colName
+		print
 
 	def display_collection(self):
 		print "Collection:", self
