@@ -3,13 +3,9 @@
 from datetime import datetime, date, timedelta
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
-import json
-from os import path, chdir
 
 from settings.general_settings import archiveName
 from classes import Article, Collection
-
-dir = path.dirname(__file__)
 
 # set number of days back in time to
 # be scraped. If set to 1, only today's
