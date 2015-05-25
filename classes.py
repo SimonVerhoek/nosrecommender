@@ -300,11 +300,16 @@ class Query(dict):
 		self.__setitem__(self.queryType, {})
 
 	def add_occurrence(self, occurence):
-		self[self.queryType].__setitem__(occurence, {})
+		self[self.queryType].__setitem__(occurence, [])
 
 	def add_match_query(self, matchType, key, value):
-		self[self.queryType].values()[0].__setitem__(matchType, {key: value})
-	
+		"""
+		Adds a new match query to current occurrence.
+		"""
+		newMatch = {matchType: {key: value}}
+		self[self.queryType].values()[0].append(newMatch)
+
+
 class Bool(Query):
 	queryType = "bool"
 		
