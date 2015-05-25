@@ -18,7 +18,7 @@ setting = {
     }
 }
 
-mapping = { u'URL': {       'boost': 1.0,
+mapping = { u'url': {       'boost': 1.0,
                             'index': 'analyzed',
                             'store': 'yes',
                             'type': u'string',
