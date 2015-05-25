@@ -292,3 +292,26 @@ class Collection(dict):
 	def display_articleCount(self):
 		print "Number of articles in %s: %d" %(self.colName, len(self[self.colName])) 
 
+
+class Query(dict):
+	queryType = ""
+
+	def __init__(self, *args, **kwargs):
+		self.__setitem__(self.queryType, {})
+
+	def add_occurrence(self, occurence):
+		self[self.queryType].__setitem__(occurence, {})
+
+	def add_match_query(self, matchType, key, value):
+		self[self.queryType].values()[0].__setitem__(matchType, {key: value})
+	
+class Bool(Query):
+	queryType = "bool"
+		
+
+
+
+
+
+
+
