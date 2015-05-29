@@ -316,20 +316,6 @@ class Query(dict):
 		newMatch = {matchType: {key: value}}
 		self[self.queryType].values()[0].append(newMatch)
 
-	def send_to_index(self, indexName):
-		recommendedArticles = Collection("recommendedArticles")
-		print recommendedArticles
-
-		# create a connection with ElasticSearch
-		connection = ES('localhost:9200')
-		returns = connection.search(query = self, index = indexName)
-
-		for article in returns:
-			# add ES' relevance score
-			article["score"] = article._meta.score
-
-			recommendedArticles.add_article(article)
-
 
 class Bool(Query):
 	queryType = "bool"
