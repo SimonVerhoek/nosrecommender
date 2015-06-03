@@ -165,12 +165,28 @@ class Collection(dict):
 
 	colName = ""
 
-	def __init__(self, key, value=[]):
+	def __init__(self, collection):
 		"""
 		Instantiates a {key: value} archive dict.
 		"""
-		self.colName = key
-		self.__setitem__(key, value)
+		if type(collection) is str:
+			"""
+			When just a string is passed
+			"""
+			self.colName = collection
+			self.__setitem__(self.colName, [])
+
+		elif type(collection) is dict:
+			"""
+			When a dict with already existing articles
+			in it is passed
+			"""
+			self.colName = collection.keys()[0]
+			self.__setitem__(self.colName, [])
+
+			for article in collection.values()[0]:
+				self.add_article(article)
+
 		Collection.colCount += 1
 
 	def add_article(self, article):
