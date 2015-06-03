@@ -252,6 +252,9 @@ class Collection(dict):
 
 	def import_from_json(self, fileName):
 		"""
+		DEPRECATED - replaced by import_collection function in
+		functions.py
+
 		Imports a collection from a JSON file.
 		If no file is found, program is exited.
 		- 	fileName should be a string with the name of 
@@ -281,6 +284,9 @@ class Collection(dict):
 
 	def export_to_json(self):
 		"""
+		DEPRECATED - replaced by export_collection function in
+		functions.py
+
 		Exports collection to a JSON file.
 		The name of the collection will be given as a filename.
 		The file is stored in the "files" subdirectory.

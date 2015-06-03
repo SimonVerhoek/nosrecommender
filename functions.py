@@ -14,6 +14,7 @@ from settings.index_settings import setting, mapping
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
 
+
 def query_index(query, index):
 	"""
 	Queries index for recommended news articles.
@@ -34,7 +35,14 @@ def query_index(query, index):
 
 	return recommendedArticles
 
+
 def import_collection(fileName):
+	"""
+	Imports a collection from a JSON file.
+	If no file is found, program is exited.
+	- 	fileName should be a string with the name of 
+		a JSON file, WITHOUT the ".json" extension.
+	"""
 	print 'Attempting to import from "files/' + fileName + '"...'
 
 	fileName += ".json"
