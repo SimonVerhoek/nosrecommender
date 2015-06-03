@@ -6,7 +6,7 @@ from classes import Article, Collection#, Query, Bool
 # needed by Collection class only
 from pyes import *
 
-from os import chdir, pardir
+from os import path, chdir, pardir
 
 
 from settings.index_settings import setting, mapping
