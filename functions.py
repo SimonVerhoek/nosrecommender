@@ -53,3 +53,25 @@ def import_collection(fileName):
 	else:
 		print "File not found."
 		exit()
+
+
+def export_collection(collection):
+	"""
+	Exports collection to a JSON file.
+	The name of the collection will be given as a filename.
+	The file is stored in the "files" subdirectory.
+	"""
+	# go to files directory
+	chdir("files")
+
+	fileName = collection.keys()[0]
+
+	outFile = open(fileName + ".json", "w+")
+	json.dump(collection, outFile, indent = 4)
+	outFile.close()
+
+	# move back to parent directory
+	chdir(pardir)
+
+	print "Exported collection to files/%s.json." % fileName
+	print
