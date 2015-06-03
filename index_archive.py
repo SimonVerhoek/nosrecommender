@@ -2,6 +2,7 @@
 
 from settings.general_settings import archiveName
 from classes import Article, Collection
+from functions import import_collection
 
 
 def main():
@@ -11,8 +12,9 @@ def main():
 
     # import an existing archive.
     #archive = import_archive(archiveName)
-    archive = Collection(archiveName)
-    archive.import_from_json(archiveName)
+    #archive = Collection(archiveName)
+    #archive.import_from_json(archiveName)
+    archive = import_collection(archiveName)
 
     # build ElasticSearch index of archive
     Collection.build_index(archive)
