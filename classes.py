@@ -165,12 +165,28 @@ class Collection(dict):
 
 	colName = ""
 
-	def __init__(self, key, value=[]):
+	def __init__(self, collection):
 		"""
 		Instantiates a {key: value} archive dict.
 		"""
-		self.colName = key
-		self.__setitem__(key, value)
+		if type(collection) is str:
+			"""
+			When just a string is passed
+			"""
+			self.colName = collection
+			self.__setitem__(self.colName, [])
+
+		elif type(collection) is dict:
+			"""
+			When a dict with already existing articles
+			in it is passed
+			"""
+			self.colName = collection.keys()[0]
+			self.__setitem__(self.colName, [])
+
+			for article in collection.values()[0]:
+				self.add_article(article)
+
 		Collection.colCount += 1
 
 	def add_article(self, article):
@@ -236,6 +252,9 @@ class Collection(dict):
 
 	def import_from_json(self, fileName):
 		"""
+		DEPRECATED - replaced by import_collection function in
+		functions.py
+
 		Imports a collection from a JSON file.
 		If no file is found, program is exited.
 		- 	fileName should be a string with the name of 
@@ -265,6 +284,9 @@ class Collection(dict):
 
 	def export_to_json(self):
 		"""
+		DEPRECATED - replaced by export_collection function in
+		functions.py
+
 		Exports collection to a JSON file.
 		The name of the collection will be given as a filename.
 		The file is stored in the "files" subdirectory.
