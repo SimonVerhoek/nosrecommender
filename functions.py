@@ -7,7 +7,6 @@ from pyes import *
 
 from os import path, chdir, pardir
 
-from settings.index_settings import setting, mapping
 
 # create a connection with ElasticSearch
 connection = ES('localhost:9200')
