@@ -6,6 +6,7 @@ from urllib2 import urlopen
 
 from settings.general_settings import archiveName
 from classes import Article, Collection
+from functions import export_collection
 
 # set number of days back in time to
 # be scraped. If set to 1, only today's
@@ -21,7 +22,7 @@ def main():
 	""" 
 	Export the built archive to a JSON file.
 	"""
-	archive.export_to_json()
+	export_collection(archive)
 
 
 def build_new_archive(archiveName, noDays):
