@@ -80,3 +80,24 @@ def export_collection(collection):
 
 	print "Exported collection to files/%s.json." % fileName
 	print
+
+def export_query(query):
+	"""
+	Exports query to a JSON file.
+	The name of the collection will be given as a filename.
+	The file is stored in the "files" subdirectory.
+	"""
+	# go to files directory
+	chdir("files")
+
+	fileName = "query"
+
+	outFile = open(fileName + ".json", "w+")
+	json.dump(query, outFile, indent = 4)
+	outFile.close()
+
+	# move back to parent directory
+	chdir(pardir)
+
+	print "Exported query to files/%s.json." % fileName
+	print

@@ -324,7 +324,8 @@ class Query(dict):
 		- 	should
 		- 	must_not
 		"""
-		self[self.queryType].__setitem__(occurence, [])
+		articleOccurrence = {occurence: []}
+		self[self.queryType].update(articleOccurrence)
 
 	def add_match_query(self, matchType, key, value):
 		"""
