@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from classes import Article, Collection, Query, Bool
+from classes import Collection
 
 # needed by Collection class only
 from pyes import *
@@ -19,12 +19,12 @@ def query_index(query, index):
 	with their scores.
 	-	query should be a Query dict.
 	- 	index should be a string with the name of the ElasticSearch
-		index to be queried. 
+		index to be queried.
 	"""
 	# create new dict for storing recommended articles in
 	recommendedArticles = Collection("recommendedArticles")
 
-	returns = connection.search(query = query, index = index)
+	returns = connection.search(query=query, index=index)
 	for article in returns:
 		# add ES' relevance score
 		article["score"] = article._meta.score
@@ -37,7 +37,7 @@ def import_collection(fileName):
 	"""
 	Imports a collection from a JSON file.
 	If no file is found, program is exited.
-	- 	fileName should be a string with the name of 
+	- 	fileName should be a string with the name of
 		a JSON file, WITHOUT the ".json" extension.
 	"""
 	print 'Attempting to import from "files/' + fileName + '"...'
@@ -72,7 +72,7 @@ def export_collection(collection):
 	fileName = collection.keys()[0]
 
 	outFile = open(fileName + ".json", "w+")
-	json.dump(collection, outFile, indent = 4)
+	json.dump(collection, outFile, indent=4)
 	outFile.close()
 
 	# move back to parent directory

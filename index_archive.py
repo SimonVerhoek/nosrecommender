@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from settings.general_settings import archiveName
-from classes import Article, Collection
+from classes import Collection
 from functions import import_collection
 
 

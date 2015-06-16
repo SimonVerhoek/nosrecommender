@@ -8,15 +8,15 @@ from urllib2 import urlopen
 from pyes import *
 
 import json
-from os import path, chdir, getcwd, pardir
+from os import path, chdir, pardir
 dir = path.dirname(__file__)
 
 # import settings
 from settings.article_settings import (
-	possibleCategories, 
-	titleTag, 
-	categoriesTag, 
-	textTag, 
+	possibleCategories,
+	titleTag,
+	categoriesTag,
+	textTag,
 	imageTag
 )
 from settings.index_settings import setting, mapping
@@ -25,11 +25,11 @@ from settings.index_settings import setting, mapping
 class Article(dict):
 	"""
 	Creates a dict for news articles.
-	A string containing a url is mandatory for 
+	A string containing a url is mandatory for
 	instantiating an article. Supported attributes
 	are preset without a value, as shown in global
 	attribute 'defaults'. One can override these values
-	by adding extra input arguments as key = "value". 
+	by adding extra input arguments as key = "value".
 	The "value" then overrides the default value of 'None'.
 
 	If an instance is found to lack information (one of the
@@ -55,7 +55,7 @@ class Article(dict):
 		self.__setitem__("url", url)
 		self.update(Article.defaults)
 
-		# if any other values found, 
+		# if any other values found,
 		# replace default value
 		for key, value in kwargs.items():
 			self.update(kwargs)
@@ -65,20 +65,18 @@ class Article(dict):
 		# check if no data is missing
 		self.check_completeness()
 
-
 	def check_completeness(self):
-		""" 
+		"""
 		Checks if no data is missing.
 		If any tag is missing, its data is scraped from the
 		article website.
-		""" 
+		"""
 		itemsToScrape = []
 		for key, value in self.items():
-			if value == None:
+			if value is None:
 				itemsToScrape.append(key)
 		if len(itemsToScrape) > 0:
 			self.scrape(itemsToScrape)
-		
 
 	def scrape(self, *args):
 		soup = BeautifulSoup(urlopen(self["url"]))
@@ -108,39 +106,38 @@ class Article(dict):
 				print "Scraping body text failed."
 		if "image" in args:
 			try:
-				self.scrape_image(soup)	
+				self.scrape_image(soup)
 				scraped.append("image")
 			except:
-				print "Scraping image failed."	
+				print "Scraping image failed."
 
 		print "Scraped:", ", ".join(scraped)
 
 	def scrape_title(self, soup):
 		self["title"] = soup.find(titleTag["type"], {
-					titleTag.keys()[1]:titleTag.values()[1]
+					titleTag.keys()[1]: titleTag.values()[1]
 				}).text
 
 	def scrape_categories(self, soup):
 		self["categories"] = ""
 		for count, item in enumerate(soup.find_all(categoriesTag["type"], {
-					categoriesTag.keys()[1]:categoriesTag.values()[1]
+					categoriesTag.keys()[1]: categoriesTag.values()[1]
 				})):
 			if item.string in possibleCategories:
 				if count > 0:
 					# only add comma from second category on
-					self["categories"] += "," 
+					self["categories"] += ","
 				self["categories"] += item.string
 
 	def scrape_body(self, soup):
 		self["body"] = ""
 		for paragraph in soup.find_all(textTag["type"]):
 			self["body"] += paragraph.text
-			
+
 	def scrape_image(self, soup):
 		self["image"] = soup.find(imageTag["type"], {
-			imageTag.keys()[1]:imageTag.values()[1]
+			imageTag.keys()[1]: imageTag.values()[1]
 		}).get("src")
-
 
 	def display_articleCount(self):
 		print "Number of articles instantiated:", Article.articleCount
@@ -148,7 +145,6 @@ class Article(dict):
 	def display_article(self):
 		for key, value in self.items():
 			print key, "=", value
-
 
 
 class Collection(dict):
@@ -201,11 +197,11 @@ class Collection(dict):
 		"""
 		Builds index for news archive in ElasticSearch.
 		-   mapping should be a dictionary containing
-        	the inner details of the ElasticSearch
-        	index.
-    	-   setting should be a dictionary containing
-        	the settings for the ElasticSearch index
-        	to be initialised.
+			the inner details of the ElasticSearch
+			index.
+		-   setting should be a dictionary containing
+			the settings for the ElasticSearch index
+			to be initialised.
 		"""
 		# create a connection with ElasticSearch
 		connection = ES('localhost:9200')
@@ -217,7 +213,7 @@ class Collection(dict):
 			pass
 
 		connection.indices.create_index(self.colName, setting)
-		connection.indices.put_mapping("test_type", {'properties':mapping}, [self.colName])
+		connection.indices.put_mapping("test_type", {'properties': mapping}, [self.colName])
 		print 'Index with name "' + self.colName + '" added to ElasticSearch.'
 		print
 
@@ -242,13 +238,12 @@ class Collection(dict):
 		"""
 		# create a connection with ElasticSearch
 		connection = ES('localhost:9200')
-		
+
 		try:
 			connection.indices.delete_index(self.colName)
 			print "index", self.colName, "removed from ElasticSearch."
 		except:
 			pass
-
 
 	def import_from_json(self, fileName):
 		"""
@@ -257,11 +252,11 @@ class Collection(dict):
 
 		Imports a collection from a JSON file.
 		If no file is found, program is exited.
-		- 	fileName should be a string with the name of 
+		- 	fileName should be a string with the name of
 			a JSON file, WITHOUT the ".json" extension.
 		"""
 		print 'Attempting to import from "files/' + fileName + '"...'
-		
+
 		fileName += ".json"
 		chdir("files")
 
@@ -294,7 +289,7 @@ class Collection(dict):
 		chdir("files")
 
 		outFile = open(self.colName + ".json", "w+")
-		json.dump(self, outFile, indent = 4)
+		json.dump(self, outFile, indent=4)
 		outFile.close()
 
 		chdir(pardir)
@@ -312,7 +307,7 @@ class Collection(dict):
 		print "Number of collections:", Collection.colCount
 
 	def display_articleCount(self):
-		print "Number of articles in %s: %d" %(self.colName, len(self[self.colName])) 
+		print "Number of articles in %s: %d" % (self.colName, len(self[self.colName]))
 
 
 class Query(dict):
@@ -341,11 +336,3 @@ class Query(dict):
 
 class Bool(Query):
 	queryType = "bool"
-		
-
-
-
-
-
-
-

@@ -3,7 +3,7 @@ setting = {
         "filter": {
             "dutch_stop": {
                 "type": "stop",
-                "stopwords": "_dutch_" 
+                "stopwords": "_dutch_"
             }
         },
         "analyzer": {
